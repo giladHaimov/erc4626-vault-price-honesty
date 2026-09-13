@@ -42,9 +42,17 @@ Judgment column is **who is hurt**, not vulnerable/safe. If the numbers do not n
 4. First-depositor inflation
 5. Helper gap (only if decodable; else N/A)
 
-## Phase 2 (not done)
+## Phase 2 (live fork)
 
-10–15 live vaults on a mainnet fork at pinned blocks. Needs `MAINNET_RPC_URL`. Allowlist stub: `docs/live-allowlist.md`.
+Allowlisted mainnet ERC-4626s at one pinned block via `vm.createSelectFork`. Writes `reports/live.md`. Needs `MAINNET_RPC_URL` (see `.env.example`). Allowlist: `docs/live-allowlist.md`.
+
+```bash
+set -a && source .env && set +a
+rm -f reports/live.md
+forge test --jobs 1 --match-path 'test/Live*.t.sol' -vv
+```
+
+Without `MAINNET_RPC_URL`, live tests skip and fixture tests still pass.
 
 ## License
 
