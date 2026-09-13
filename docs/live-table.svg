@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1002" height="596" viewBox="0 0 1002 596">
 <rect width="100%" height="100%" fill="#ffffff"/>
-<text x="8" y="20" font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" font-weight="700" fill="#111">Live vaults at block 25967333  —  green = all ran cases passed   red = at least one failed   gray = did not run</text>
+<text x="8" y="20" font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" font-weight="700" fill="#111">Live vaults at block 25967333  —  green = ran cases passed   yellow = observation, no token loss shown   gray = did not run</text>
 <rect x="1" y="28" width="1000" height="36" fill="#374151"/>
 <text x="13" y="52" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="700" fill="#fff"></text>
 <text x="83" y="52" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="700" fill="#fff">vault</text>
@@ -18,12 +18,12 @@
 <text x="83" y="136" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="400" fill="#111">sUSDS (Spark)</text>
 <text x="363" y="136" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="400" fill="#111">none</text>
 <text x="583" y="136" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="400" fill="#111">—</text>
-<rect x="1" y="152" width="1000" height="44" fill="#fca5a5"/>
+<rect x="1" y="152" width="1000" height="44" fill="#fde68a"/>
 <line x1="1" y1="196" x2="1001" y2="196" stroke="#c5c5c5" stroke-width="1"/>
-<text x="13" y="180" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="700" fill="#111">FAIL</text>
+<text x="13" y="180" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="700" fill="#111">OBS</text>
 <text x="83" y="180" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="400" fill="#111">sUSDe (Ethena)</text>
-<text x="363" y="180" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="400" fill="#111">gift vs deposit</text>
-<text x="583" y="180" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="400" fill="#111">share price went up — next depositor pays more</text>
+<text x="363" y="180" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="400" fill="#111">gift counted</text>
+<text x="583" y="180" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="400" fill="#111">price up; no token loss shown; not a FAIL</text>
 <rect x="1" y="196" width="1000" height="44" fill="#86efac"/>
 <line x1="1" y1="240" x2="1001" y2="240" stroke="#c5c5c5" stroke-width="1"/>
 <text x="13" y="224" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="700" fill="#111">PASS</text>

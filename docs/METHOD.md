@@ -12,7 +12,7 @@ This is how the report is produced. It is not an audit procedure.
 | Preview | All four functions | Deposit; redeem if not gated |
 | Leftover / first depositor | Exercised | N/A — we do not empty a live pot |
 
-A snapshot is not “running tests on mainnet.” Foundry copies one block onto your machine.
+A snapshot is not “running tests on mainnet.” Foundry copies one **pinned** block (`createSelectFork(rpc, 25967333)`). Forking `latest` and then writing down `block.number` is not a pin.
 
 ## Order of cases
 

@@ -52,8 +52,8 @@ contract FirstDepositorTest is Test {
                 " victimPreviewRedeem=",
                 TestVaultReport.e18(victimRedeem)
             ),
-            "victim share count rounds to 0",
-            "victim (almost no shares); attacker can redeem nearly the pot"
+            "victim share count rounds to 0; attacker grief (spent ~10001e18, redeems ~5025e18, net negative)",
+            "victim lost 50e18 (0 shares). attacker also lost, griefing, not a profitable steal"
         );
     }
 
@@ -84,8 +84,8 @@ contract FirstDepositorTest is Test {
                 " victimPreviewRedeem=",
                 TestVaultReport.e18(victimRedeem)
             ),
-            "inflation muted (numbers only; not a safety claim)",
-            "none named (offset reduced the rounding wipeout in this test vault)"
+            "wipeout muted; victim still ~10% short of deposit on redeem",
+            "victim (deposited 50e18, redeem ~45e18). not zero shares; still a short redeem"
         );
     }
 

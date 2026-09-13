@@ -19,6 +19,7 @@ contract LiveForkTest is Test {
 
     bool internal forked;
     uint256 internal pinnedBlock;
+    uint256 internal constant PINNED_BLOCK = 25_967_333;
 
     address internal constant USDC = 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48;
     address internal constant WETH = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
@@ -29,9 +30,10 @@ contract LiveForkTest is Test {
         if (bytes(rpc).length == 0) {
             return;
         }
-        // createSelectFork returns forkId — pin block.number after select.
-        vm.createSelectFork(rpc);
-        pinnedBlock = block.number;
+        // Pin a historical block. createSelectFork(rpc) alone is latest — not reproducible.
+        vm.createSelectFork(rpc, PINNED_BLOCK);
+        pinnedBlock = PINNED_BLOCK;
+        require(block.number == PINNED_BLOCK, "fork is not the pinned block");
         forked = true;
         LiveVaultReport.init(pinnedBlock);
     }
@@ -47,7 +49,8 @@ contract LiveForkTest is Test {
         uint256 ranVaults = 0;
 
         for (uint256 i = 0; i < specs.length; i++) {
-            // Isolate each vault so one hard revert does not kill the suite.
+            // Isolate each vault: try/catch plus snapshot so gifts/deals do not leak.
+            uint256 snap = vm.snapshot();
             try this.runOneVault(specs[i]) returns (bool included) {
                 if (included) ranVaults++;
             } catch Error(string memory reason) {
@@ -62,6 +65,7 @@ contract LiveForkTest is Test {
                     "none named"
                 );
             }
+            vm.revertTo(snap);
         }
 
         assertGt(ranVaults, 0, "at least one vault should verify");
@@ -483,8 +487,14 @@ contract LiveForkTest is Test {
             return;
         }
 
-        bool depPass = actualDep >= previewDep;
-        string memory extra = _tryRedeemNote(vault, asset, actor, dec);
+        uint256 shareDelta = IERC20(address(vault)).balanceOf(actor);
+        bool depPass = actualDep >= previewDep && shareDelta == actualDep;
+        (string memory extra, bool redeemFail) = _tryRedeemNote(vault, asset, actor, dec);
+
+        string memory spec;
+        if (!depPass) spec = "FAIL (deposit actual<preview or share balance != returned)";
+        else if (redeemFail) spec = "FAIL (redeem token delta < preview)";
+        else spec = "PASS (deposit actual>=preview)";
 
         LiveVaultReport.row(
             subject,
@@ -497,19 +507,21 @@ contract LiveForkTest is Test {
                 LiveVaultReport.u(actualDep),
                 " previewShares=",
                 LiveVaultReport.u(previewDep),
+                " shareBalance=",
+                LiveVaultReport.u(shareDelta),
                 extra
             ),
-            depPass ? "PASS (deposit actual>=preview)" : "FAIL (deposit actual<preview)",
-            depPass ? "none named" : "integrators / depositors relying on previewDeposit"
+            spec,
+            (!depPass || redeemFail) ? "integrators / depositors relying on preview" : "none named"
         );
     }
 
     function _tryRedeemNote(IERC4626 vault, address asset, address actor, uint8 dec)
         internal
-        returns (string memory extra)
+        returns (string memory extra, bool redeemFail)
     {
         uint256 sharesBal = IERC20(address(vault)).balanceOf(actor);
-        if (sharesBal == 0) return "; redeem N/A (no shares)";
+        if (sharesBal == 0) return ("; redeem N/A (no shares)", false);
         uint256 redeemShares = sharesBal / 4;
         if (redeemShares == 0) redeemShares = sharesBal;
 
@@ -517,23 +529,24 @@ contract LiveForkTest is Test {
         try vault.previewRedeem(redeemShares) returns (uint256 p) {
             previewRed = p;
         } catch {
-            return "; redeem N/A (previewRedeem revert)";
+            return ("; redeem N/A (previewRedeem revert)", false);
         }
 
         uint256 assetsBefore = IERC20(asset).balanceOf(actor);
         vm.prank(actor);
-        try vault.redeem(redeemShares, actor, actor) returns (uint256 out) {
+        try vault.redeem(redeemShares, actor, actor) returns (uint256 /*out*/) {
+            // Token delta only. A return value with no transfer is not a redeem.
             uint256 delta = IERC20(asset).balanceOf(actor) - assetsBefore;
-            uint256 actualRed = delta > 0 ? delta : out;
-            return string.concat(
-                "; redeem actual=",
-                LiveVaultReport.qty(actualRed, dec),
+            redeemFail = delta < previewRed;
+            extra = string.concat(
+                "; redeem tokenDelta=",
+                LiveVaultReport.qty(delta, dec),
                 " preview=",
                 LiveVaultReport.qty(previewRed, dec),
-                actualRed >= previewRed ? " OK" : " FAIL"
+                redeemFail ? " FAIL" : " OK"
             );
         } catch {
-            return "; redeem N/A (cooldown/gated)";
+            extra = "; redeem N/A (cooldown/gated)";
         }
     }
 

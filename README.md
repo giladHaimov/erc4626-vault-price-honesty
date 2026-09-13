@@ -41,21 +41,17 @@ Mocks exist so the local layer is cheap. The live layer exists because a mock ca
 This is the rule. It is not optional.
 
 - **Green** = every case we ran on that vault passed.
-- **Red** = at least one case failed. The row says which case, and the bad outcome in one line (example: unfair share mint; next depositor pays more).
+- **Red** = at least one case failed, and the numbers name a token loss or a preview break.
+- **Yellow** = we saw a behavior (example: gifts counted). No token loss shown. Not a FAIL.
 - **Gray** = we did not run the case.
 
 GitHub’s README strips HTML background colors, so the table below is an image. The row itself is green or red.
 
-## Live finding — block `25967333`
+## Live observation — block `25967333`
 
-One red row: **sUSDe (Ethena)**.
+**sUSDe (Ethena)** counted a gift. Share price went up. We do **not** call that a FAIL. Nobody was shown to lose tokens. The team may want gifts to raise price. The report records: gifts counted. Victim: none named.
 
-- **Which case:** gift vs deposit.
-- **What we did:** deposit, then send the same token in as a gift.
-- **What happened:** share price went up.
-- **Bad outcome:** the next depositor pays more for the same share.
-
-We **record this as a failed case**. It is not a conclusive error. The vault team may want gifts to raise share price (existing holders gain). That can be a product choice. The report’s job is to show the price move, not to tell Ethena to change it.
+The live fork is pinned at this block (`vm.createSelectFork(rpc, 25967333)`). Re-runs should hit the same numbers.
 
 Preview: no live vault we tested lied.
 
@@ -142,7 +138,7 @@ Local tests answer: “Does the suite even work?” I know the answer in advance
 
 Live tests answer: “What do real deployed vaults do at this block?” I do not know the answer in advance. A red row on a vault I did not write is the public demo. One red row is not a verdict that the protocol is broken.
 
-That is why sUSDe is written up as a **failed case**, not a **conclusive error**. We saw a gift move the share price. The team may like that (existing holders gain). We still color the row red because the case failed the check we ran.
+That is why sUSDe is written up as an **observation**, not a FAIL. We saw a gift move the share price. The team may like that. No depositor was shown to lose tokens.
 
 Gray is not a pass and not a fail. It means we did not run it. Do not read SKIP as “safe.”
 

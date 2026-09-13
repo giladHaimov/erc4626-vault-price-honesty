@@ -17,15 +17,15 @@ Local demo vaults. No RPC. No mainnet.
 
 ### `FailedFirstDepositorVault` — failed first depositor
 
-Attacker deposits 1 wei, gifts 10,000 tokens, victim deposits 50 tokens and gets **0 shares**. Attacker can redeem about 5,025 tokens. Victim can redeem 0.
+Attacker deposits 1 wei, gifts 10,000 tokens, victim deposits 50 tokens and gets **0 shares**. Victim can redeem 0. Attacker can redeem about 5,025 tokens.
 
-Bad outcome: **unfair share mint.** Victim paid and got nothing.
+Victim lost 50 tokens. Attacker spent about 10,001 and got about 5,025 back. That is **griefing**, not a profitable steal. OpenZeppelin’s virtual share ate the rest of the gift.
 
-Preview on this vault still matched. Gift counted (price up). Leftover-empty: 500 tokens left in the pot; next depositor may receive them.
+Preview on this vault still matched. Gift counted (price up). Leftover-empty: 500 tokens left in the pot. Next depositor (1,000 in) can redeem about 750. That depositor lost ~250. Virtual shares captured the rest. Not “they received the leftover.”
 
 ### `CorrectOffsetVault` — passed the wipeout we ran
 
-Same attack. Victim got 9 shares and can redeem about 45 tokens. Wipeout muted. Preview matched.
+Same attack. Victim got 9 shares and can redeem about 45 of the 50 they deposited. Wipeout muted (not zero shares). Victim is still ~10% short. Preview matched.
 
 ### `FailedPreviewLieVault` — failed preview
 

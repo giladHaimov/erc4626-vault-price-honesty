@@ -69,8 +69,8 @@ contract LeftoverEmptyTest is Test {
             "LeftoverEmpty",
             "ran",
             facts,
-            "facts only (no fail for leftover)",
-            "none named (next depositor may receive leftover)"
+            "bob 1000e18 in, ~750e18 redeemable; virtual shares captured the rest",
+            "bob (lost ~250e18 vs deposit). leftover is not a gift to bob in this run"
         );
     }
 }
