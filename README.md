@@ -4,46 +4,85 @@
 
 [![ci](https://github.com/giladHaimov/erc4626-vault-test-report/actions/workflows/ci.yml/badge.svg)](https://github.com/giladHaimov/erc4626-vault-test-report/actions/workflows/ci.yml)
 
-A Foundry suite that measures ERC-4626 vaults and writes a test report. Judgment is **who is hurt**, not vulnerable/safe.
+Foundry suite. Local **test vaults** prove the tool. A **live snapshot** reads real Ethereum vaults at one block. No mainnet deploy. No mainnet gas.
 
-Two layers:
+Not an audit. Not a patched vault.
 
-1. **Test vaults** (local, no RPC) — a clean OpenZeppelin vault and planted-fault vaults. This is how we know the suite works. Read [`reports/test-vaults.md`](reports/test-vaults.md).
-2. **Live snapshot** — Foundry copies Ethereum at one block onto your machine and runs the same cases against real vaults already on mainnet (sDAI, Yearn, Morpho, …). No mainnet gas. We did not deploy those vaults. Full table: [`reports/live.md`](reports/live.md).
+## Live finding (block `25967333`)
 
-This is **not an audit** and not a patched vault.
+<table>
+<tr><td bgcolor="#ffcdd2"><b>FAILED one case — sUSDe (Ethena)</b></td></tr>
+<tr><td bgcolor="#ffcdd2">
+<b>Which case:</b> gift vs deposit.<br>
+<b>What happened:</b> we deposited, then transferred the same token in. <code>totalAssets</code> and share price went up.<br>
+<b>Bad outcome:</b> later depositors pay a higher share price. Existing holders gain. Not theft — still a real price move from a gift.
+</td></tr>
+</table>
+
+Every other live vault that actually ran: preview matched deposit, gifts not counted.
+
+Leftover-empty and first-depositor were **not run** on live pots (we will not empty a real vault). Snapshot could not drive sUSDC, Gauntlet USDC Prime, two Euler EVK vaults, yvUSDT (`asset()` / run revert on the public RPC; `cast call` works).
+
+Full numbers: [`reports/live.md`](reports/live.md). Local proof: [`reports/test-vaults.md`](reports/test-vaults.md).
+
+## Live table
+
+Green = every case that ran passed. Red = at least one case failed. Gray = did not run.
+
+<table>
+<tr>
+<th></th><th>vault</th><th>simple</th>
+</tr>
+<tr bgcolor="#c8e6c9">
+<td>PASS</td><td>sDAI (Spark)</td><td>Preview matched. Gift did not move price.</td>
+</tr>
+<tr bgcolor="#c8e6c9">
+<td>PASS</td><td>sUSDS (Spark)</td><td>Preview matched. Gift did not move price.</td>
+</tr>
+<tr bgcolor="#ffcdd2">
+<td>FAIL</td><td>sUSDe (Ethena)</td><td>Gift moved the share price. Later depositors pay more.</td>
+</tr>
+<tr bgcolor="#c8e6c9">
+<td>PASS</td><td>yvUSDC-1 (Yearn V3)</td><td>Preview matched. Gift did not move price.</td>
+</tr>
+<tr bgcolor="#c8e6c9">
+<td>PASS</td><td>yvWETH-1 (Yearn V3)</td><td>Preview matched. Gift did not move price.</td>
+</tr>
+<tr bgcolor="#c8e6c9">
+<td>PASS</td><td>yvDAI-1 (Yearn V3)</td><td>Preview matched. Gift did not move price.</td>
+</tr>
+<tr bgcolor="#eeeeee">
+<td>SKIP</td><td>yvUSD (Yearn V3)</td><td>Deposit gated. No preview run.</td>
+</tr>
+<tr bgcolor="#c8e6c9">
+<td>PASS</td><td>yvUSDS-1 (Yearn V3)</td><td>Preview matched. Gift did not move price.</td>
+</tr>
+<tr bgcolor="#c8e6c9">
+<td>PASS</td><td>Steakhouse USDC (Morpho)</td><td>Preview matched. Gift did not move price.</td>
+</tr>
+<tr bgcolor="#c8e6c9">
+<td>PASS</td><td>Gauntlet USDC Core (Morpho)</td><td>Preview matched. Gift did not move price.</td>
+</tr>
+<tr bgcolor="#c8e6c9">
+<td>PASS</td><td>sfrxETH</td><td>Preview matched. Gift did not move price.</td>
+</tr>
+<tr bgcolor="#eeeeee">
+<td>SKIP</td><td>sUSDC, Gauntlet Prime, 2 Euler EVK, yvUSDT</td><td>Public snapshot could not call the vault. Not a finding.</td>
+</tr>
+</table>
 
 ## Test vaults
 
-| Vault | Role |
-|---|---|
-| `CorrectOzVault` | Plain OpenZeppelin 4626. Clean control. |
-| `CorrectOffsetVault` | Virtual shares. First-depositor wipeout muted. |
-| `FailedPreviewLieVault` | `preview*` lies. Deposit mints the lie. |
-| `FailedStaleNavVault` | Cached NAV. Gifts ignored until `poke()`. |
+Local. No RPC.
 
-We mark **unfair mint** when a victim is named: first-depositor wipeout (0 shares) and the preview lie (extra shares minted). Leftover-empty is measured and not stamped unless you want that stamp — the next depositor can still take the leftover tokens.
+| Vault | We expect | Result |
+|---|---|---|
+| `FailedFirstDepositorVault` | First depositor wiped | Failed. Victim got 0 shares. Unfair mint. |
+| `CorrectOffsetVault` | Wipeout muted | Passed that case. |
+| `FailedPreviewLieVault` | Preview lies | Failed. Extra shares minted. Unfair mint. |
+| `FailedStaleNavVault` | Stale NAV | Failed. Gift ignored until `poke()`. |
 
-## Last live run — block `25967333`
-
-Public Alchemy snapshot. **11 vaults completed cases.** Four others have code on the snapshot but `asset()` empty-reverts here (the public RPC does not follow some proxies). Same addresses answer `cast call`. That is a snapshot limit, not “not a 4626.”
-
-| vault | preview vs deposit | gifts | leftover / first depositor | helper gap | who is hurt |
-|---|---|---|---|---|---|
-| sDAI (Spark) | PASS | not counted | N/A (live pot) | architecture (DSR pot) | none named |
-| sUSDS (Spark) | PASS | not counted | N/A | architecture | none named |
-| **sUSDe (Ethena)** | PASS; redeem cooldown | **counted** | N/A | architecture | later depositors pay more; existing LPs gain (not theft) |
-| yvUSDC-1 (Yearn V3) | PASS | not counted | N/A | architecture (strategies) | none named |
-| yvWETH-1 (Yearn V3) | PASS | not counted | N/A | architecture | none named |
-| yvDAI-1 (Yearn V3) | PASS | not counted | N/A | architecture | none named |
-| yvUSD (Yearn V3) | N/A gated | not counted (deposit gated) | N/A | architecture | none named |
-| yvUSDS-1 (Yearn V3) | PASS | not counted | N/A | architecture | none named |
-| Steakhouse USDC (Morpho) | PASS | not counted | N/A | architecture (markets) | none named |
-| Gauntlet USDC Core (Morpho) | PASS | not counted | N/A | architecture (idle 0) | none named |
-| sfrxETH | PASS | not counted | N/A | architecture | none named |
-| sUSDC / Gauntlet Prime / 2 Euler EVK / yvUSDT | — | — | — | — | snapshot `asset()`/run revert; `cast call` works |
-
-A price jump alone is not a fee bug. I only name a fee/oracle victim if I show that path. I did not.
+Mock token: `src/mock/MockAsset.sol`.
 
 ## Run
 
@@ -52,14 +91,14 @@ A price jump alone is not a fee bug. I only name a fee/oracle victim if I show t
 rm -f reports/_generated.md
 forge test --jobs 1 --no-match-path test/LiveFork.t.sol -vv
 
-# live snapshot — needs MAINNET_RPC_URL (Alchemy public works)
-cp .env.example .env   # then set the URL; do not commit .env
+# live snapshot — RPC read only, no deploy
+cp .env.example .env   # set MAINNET_RPC_URL; do not commit .env
 set -a && source .env && set +a
 rm -f reports/live.md
 forge test --jobs 1 --match-path test/LiveFork.t.sol -vv
 ```
 
-`--jobs 1` so report rows do not interleave. CI runs test vaults only.
+CI runs test vaults only.
 
 ## License
 

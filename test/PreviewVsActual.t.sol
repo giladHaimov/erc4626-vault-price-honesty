@@ -4,8 +4,8 @@ pragma solidity ^0.8.24;
 import {Test} from "forge-std/Test.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {ERC4626} from "@openzeppelin/contracts/token/ERC20/extensions/ERC4626.sol";
-import {MockAsset} from "../src/test-vaults/MockAsset.sol";
-import {CorrectOzVault} from "../src/test-vaults/CorrectOzVault.sol";
+import {MockAsset} from "../src/mock/MockAsset.sol";
+import {FailedFirstDepositorVault} from "../src/test-vaults/FailedFirstDepositorVault.sol";
 import {CorrectOffsetVault} from "../src/test-vaults/CorrectOffsetVault.sol";
 import {FailedPreviewLieVault} from "../src/test-vaults/FailedPreviewLieVault.sol";
 import {FixturesReport} from "../src/report/FixturesReport.sol";
@@ -30,10 +30,10 @@ contract PreviewVsActualTest is Test {
         asset.mint(alice, 1_000_000e18);
     }
 
-    function test_Baseline_previewVsActual_passes() public {
-        CorrectOzVault vault = new CorrectOzVault(IERC20(address(asset)));
+    function test_FailedFirstDepositor_previewVsActual_passes() public {
+        FailedFirstDepositorVault vault = new FailedFirstDepositorVault(IERC20(address(asset)));
         _runDirectional(vault);
-        _reportPass("CorrectOzVault");
+        _reportPass("FailedFirstDepositorVault");
     }
 
     function test_Offset_previewVsActual_passes() public {

@@ -4,8 +4,8 @@ pragma solidity ^0.8.24;
 import {Test} from "forge-std/Test.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {ERC4626} from "@openzeppelin/contracts/token/ERC20/extensions/ERC4626.sol";
-import {MockAsset} from "../src/test-vaults/MockAsset.sol";
-import {CorrectOzVault} from "../src/test-vaults/CorrectOzVault.sol";
+import {MockAsset} from "../src/mock/MockAsset.sol";
+import {FailedFirstDepositorVault} from "../src/test-vaults/FailedFirstDepositorVault.sol";
 import {CorrectOffsetVault} from "../src/test-vaults/CorrectOffsetVault.sol";
 import {FixturesReport} from "../src/report/FixturesReport.sol";
 
@@ -27,15 +27,15 @@ contract FirstDepositorTest is Test {
         asset.mint(victim, VICTIM_DEPOSIT);
     }
 
-    function test_Baseline_victimRoundsBadly() public {
-        CorrectOzVault vault = new CorrectOzVault(IERC20(address(asset)));
+    function test_FailedFirstDepositor_victimRoundsBadly() public {
+        FailedFirstDepositorVault vault = new FailedFirstDepositorVault(IERC20(address(asset)));
         (uint256 attackerShares, uint256 victimShares, uint256 attackerRedeem, uint256 victimRedeem) =
             _runInflation(vault);
 
         assertEq(victimShares, 0, "Baseline offset0: victim shares floor to 0");
 
         FixturesReport.row(
-            "CorrectOzVault",
+            "FailedFirstDepositorVault",
             "FirstDepositor",
             "ran",
             string.concat(

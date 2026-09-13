@@ -39,7 +39,7 @@ Tagline: *I measure 4626 pots. I don’t sell a cure. I do say who gets hurt whe
 
 | Fixture | Role |
 |---|---|
-| `CorrectOzVault` | Boring OZ ERC-4626, offset 0. Industry default. Preview should pass. Gift counted. Leftover-empty and first-depositor are *measurable facts*, not “OZ is broken.” |
+| `FailedFirstDepositorVault` | Plain OZ, offset 0. We expect first-depositor wipeout (unfair mint). Preview should still pass. |
 | `CorrectOffsetVault` | Same + `_decimalsOffset() == 3`. First-depositor inflation should be muted. |
 | `FailedPreviewLieVault` | `previewDeposit` (and siblings) optimistic vs the real mint. Must fail case 1. |
 | `FailedStaleNavVault` | Cached `totalAssets`; gifts do not move NAV until `poke()`. Gift case: ignored. Helper-gap: `totalAssets ≠ balance`. |

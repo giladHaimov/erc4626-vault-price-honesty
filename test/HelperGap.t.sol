@@ -3,8 +3,8 @@ pragma solidity ^0.8.24;
 
 import {Test} from "forge-std/Test.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import {MockAsset} from "../src/test-vaults/MockAsset.sol";
-import {CorrectOzVault} from "../src/test-vaults/CorrectOzVault.sol";
+import {MockAsset} from "../src/mock/MockAsset.sol";
+import {FailedFirstDepositorVault} from "../src/test-vaults/FailedFirstDepositorVault.sol";
 import {FailedStaleNavVault} from "../src/test-vaults/FailedStaleNavVault.sol";
 import {FixturesReport} from "../src/report/FixturesReport.sol";
 
@@ -61,8 +61,8 @@ contract HelperGapTest is Test {
         );
     }
 
-    function test_Baseline_noHelperGap_NA() public {
-        CorrectOzVault vault = new CorrectOzVault(IERC20(address(asset)));
+    function test_FailedFirstDepositor_noHelperGap_NA() public {
+        FailedFirstDepositorVault vault = new FailedFirstDepositorVault(IERC20(address(asset)));
 
         vm.startPrank(alice);
         asset.approve(address(vault), type(uint256).max);
@@ -78,7 +78,7 @@ contract HelperGapTest is Test {
         assertEq(ta, bal, "Baseline totalAssets == balance; no separate helper");
 
         FixturesReport.row(
-            "CorrectOzVault",
+            "FailedFirstDepositorVault",
             "HelperGap",
             "N/A",
             string.concat("totalAssets=", FixturesReport.e18(ta), " == balance=", FixturesReport.e18(bal), " (no separate helper)"),

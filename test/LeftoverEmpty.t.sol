@@ -3,29 +3,29 @@ pragma solidity ^0.8.24;
 
 import {Test} from "forge-std/Test.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import {MockAsset} from "../src/test-vaults/MockAsset.sol";
-import {CorrectOzVault} from "../src/test-vaults/CorrectOzVault.sol";
+import {MockAsset} from "../src/mock/MockAsset.sol";
+import {FailedFirstDepositorVault} from "../src/test-vaults/FailedFirstDepositorVault.sol";
 import {FixturesReport} from "../src/report/FixturesReport.sol";
 
 /// @notice Alice deposits, redeems ALL, then tokens are transferred in while supply==0; Bob deposits.
-/// Do NOT fail Baseline for leftover. Report facts. Who-is-hurt: usually none named.
+/// Do NOT fail this vault for leftover. Report facts. Report facts. Who-is-hurt: usually none named.
 /// @dev Do not report convertToAssets(1e18) when supply is 1 share — that number is meaningless.
 contract LeftoverEmptyTest is Test {
     MockAsset internal asset;
-    CorrectOzVault internal vault;
+    FailedFirstDepositorVault internal vault;
     address internal alice = makeAddr("alice");
     address internal bob = makeAddr("bob");
     address internal donor = makeAddr("donor");
 
     function setUp() public {
         asset = new MockAsset("Mock USD", "mUSD");
-        vault = new CorrectOzVault(IERC20(address(asset)));
+        vault = new FailedFirstDepositorVault(IERC20(address(asset)));
         asset.mint(alice, 10_000e18);
         asset.mint(bob, 10_000e18);
         asset.mint(donor, 5_000e18);
     }
 
-    function test_Baseline_leftoverEmpty_facts() public {
+    function test_FailedFirstDepositor_leftoverEmpty_facts() public {
         vm.startPrank(alice);
         asset.approve(address(vault), type(uint256).max);
         uint256 aliceShares = vault.deposit(1_000e18, alice);
@@ -65,7 +65,7 @@ contract LeftoverEmptyTest is Test {
         );
 
         FixturesReport.row(
-            "CorrectOzVault",
+            "FailedFirstDepositorVault",
             "LeftoverEmpty",
             "ran",
             facts,

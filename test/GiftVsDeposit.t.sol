@@ -3,8 +3,8 @@ pragma solidity ^0.8.24;
 
 import {Test} from "forge-std/Test.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import {MockAsset} from "../src/test-vaults/MockAsset.sol";
-import {CorrectOzVault} from "../src/test-vaults/CorrectOzVault.sol";
+import {MockAsset} from "../src/mock/MockAsset.sol";
+import {FailedFirstDepositorVault} from "../src/test-vaults/FailedFirstDepositorVault.sol";
 import {FailedStaleNavVault} from "../src/test-vaults/FailedStaleNavVault.sol";
 import {FixturesReport} from "../src/report/FixturesReport.sol";
 
@@ -20,8 +20,8 @@ contract GiftVsDepositTest is Test {
         asset.mint(donor, 100_000e18);
     }
 
-    function test_Baseline_giftMovesTotalAssets() public {
-        CorrectOzVault vault = new CorrectOzVault(IERC20(address(asset)));
+    function test_FailedFirstDepositor_giftMovesTotalAssets() public {
+        FailedFirstDepositorVault vault = new FailedFirstDepositorVault(IERC20(address(asset)));
 
         vm.startPrank(alice);
         asset.approve(address(vault), type(uint256).max);
@@ -44,7 +44,7 @@ contract GiftVsDepositTest is Test {
         assertGt(priceAfter, priceBefore, "share price should rise after gift");
 
         FixturesReport.row(
-            "CorrectOzVault",
+            "FailedFirstDepositorVault",
             "GiftVsDeposit",
             "ran",
             string.concat(
