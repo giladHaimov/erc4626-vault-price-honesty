@@ -1,31 +1,24 @@
-# ERC-4626 vault test report
+# ERC-4626 Vault Price Honesty
 
 **I measure 4626 pots. I don’t sell a cure.**
 
 [![ci](https://github.com/giladHaimov/erc4626-vault-test-report/actions/workflows/ci.yml/badge.svg)](https://github.com/giladHaimov/erc4626-vault-test-report/actions/workflows/ci.yml)
 
-I am not shipping a patched vault. OpenZeppelin already documented leftover-empty and donation. After the last share is gone you can get fewer new shares and still redeem about the same tokens. “The depositor was cheated / I fixed OZ” is the wrong claim. A senior asks who lost money. Often nobody did.
+I started this effort trying to **fix** several ERC-4626 share-price honesty issues. They are sort of known in the community, and they also show up in OpenZeppelin’s gold-copy vault. They mainly circle around these scenarios:
 
-What still bites teams is **composability**: `preview*` vs the real call, a share price that jumps, a fee or oracle that treats that jump as yield. Sometimes the pot is not even in the vault — it sits in Aave-like helpers — and there is no honest on-chain “fix” for a number you do not control. So I do not sell a cure. I ship a **Foundry suite that measures a 4626 and writes a vault test report**.
+- **Empty pot, next depositor wiped.** Share supply is gone (everyone redeemed, last holder left, leftover dust after a gift). The next depositor can get far too few shares — or zero — for a real deposit. A dust share can take almost the pot.
+- **Leftover tokens after the last redeem.** Shares burn on withdraw. Tokens can still sit in the vault. The next mint is a different price. Sometimes the next depositor receives that leftover. Sometimes they get nothing.
+- **Gifts counted as yield.** Tokens arrive via plain `transfer`, not `deposit`. If the vault counts them, share price jumps. Later depositors pay more. Existing holders gain. That can be a product choice — the report still shows the move.
+- **Preview does not match the real mint.** `preview*` can lie versus `convertTo*` or versus what `deposit()` actually mints. Extra shares dilute holders. Integrators who trusted the preview get the wrong count.
+- **Stale or split NAV.** `totalAssets` is not always the tokens on the vault (a cache, a DSR pot, Yearn debt, Morpho markets). Anyone who reads price before the number updates sees the wrong share price.
 
-This is **not an audit**. Not a patched vault. Not “exhaustive.” Not “the best route.”
+After several attempts I reached the conclusion I cannot provide a solid solution to share with others. Such a fix relies on per-vault assumptions so much that extracting commonalities into a base contract is impossible. You need to know how the vault decides how to invest — a DAO-like majority vote? an external governance authority? How should it treat gifts (tokens received by direct transfer rather than deposit)? What to do if shares have gone to zero (ERC-4626 burns shares on redeem)? The questions kept stacking. Any non-trivial solution has to sit on that vault’s own assumptions, so there is no honest shared “fix.”
 
-## Why share price can go bad
+So instead of struggling to ship a solution, a better approach is a **test suite** aimed at ERC-4626 share-price honesty, for vault developers, that writes a detailed report: how the vault handled each scenario, and which behavior may become a problem. The report reports potential problems. Nothing more. It is left to the vault designer to decide whether a detected behavior is acceptable for their design.
 
-An ERC-4626 vault takes your ERC-20 and keeps it. You get shares instead. When you want the tokens back, the vault burns those shares and pays you from the pot. Share supply is not infinite. It is just “how many claims are outstanding.” That number can fall to (or next to) zero: everyone withdraws, the last holder redeems, a run after a loss, or leftover dust sits in the vault after a failed / unfinished inflation gift. Real shares can be gone while tokens are still there.
+OpenZeppelin already documented leftover-empty and donation. In May 2024 they called an empty-then-refill conversion jump “somewhat expected” and “not affecting the security of your vault” ([forum](https://forum.openzeppelin.com/t/erc-4626-unexpectedly-large-change-in-share-asset-conversion-rate-when-vault-emptied-and-refilled/40683)). Leftover tokens with no real shares they treat as locked to the vault ([forum](https://forum.openzeppelin.com/t/erc-4626-after-a-failed-inflation-attack-how-does-vault-recover-assets-with-no-shares/40689)). This repo does not “fix OZ.” It measures. A senior asks who lost money. Often nobody did.
 
-The next depositor then walks into a nearly empty pot. Share price is tokens / shares (plus OpenZeppelin’s virtual +1). If leftover tokens are still inside, or someone gifted tokens after minting 1 wei of shares, that depositor can get an **unfair share price**: too few shares, or **zero shares**, for a real deposit. The attacker (or whoever still holds the last share) can redeem almost the pot. That is the first-depositor / empty-refill story. A gift the vault *counts* also raises price for later depositors. A lying `preview*` can mint extra shares and dilute holders. A stale `totalAssets` can show the wrong price until someone pokes it.
-
-OpenZeppelin knows the empty-then-refill jump. In May 2024 they called a 1:1 to 1:2 conversion jump after empty+refill “somewhat expected” and “not affecting the security of your vault,” and said filling, emptying, then refilling is uncommon ([OZ forum — empty then refill](https://forum.openzeppelin.com/t/erc-4626-unexpectedly-large-change-in-share-asset-conversion-rate-when-vault-emptied-and-refilled/40683)). Leftover tokens with no real shares they treat as locked to the vault ([OZ forum — leftover with no shares](https://forum.openzeppelin.com/t/erc-4626-after-a-failed-inflation-attack-how-does-vault-recover-assets-with-no-shares/40689)). They added virtual shares / `_decimalsOffset` and still default offset 0. This repo does not “fix OZ.” It measures those cases, names who is hurt when the numbers say so, and does not invent a victim when half as many shares still redeem about the same tokens.
-
-Other bad behaviors we measure (same idea: who paid, who got the tokens):
-
-- **First-depositor wipeout** — empty pot, 1 wei deposit + large gift, next depositor gets 0 shares. Unfair mint. (`FailedFirstDepositorVault`)
-- **Empty-refill leftover** — last shares burned, tokens still in the pot, next mint is a different price. Often no loser (they may receive the leftover). We still measure it.
-- **Gift counted as yield** — unofficial `transfer` moves share price. Later depositor pays more. Existing holders gain. Can be a product choice (see sUSDe). Recorded as a failed case when price moves; not a conclusive error on a live vault.
-- **Preview lie** — `preview*` disagrees with `convertTo*` / the real mint. Extra shares can mint. Unfair mint. (`FailedPreviewLieVault`)
-- **Stale NAV** — cached `totalAssets` ignores a gift until `poke()`. Anyone who reads price first sees the wrong number. (`FailedStaleNavVault`)
-- **Helper gap** — `totalAssets ≠ balanceOf(vault)` at one block is usually architecture (DSR, Yearn, Morpho), not a lie.
+This is **not an audit**. Not a patched vault. Not “exhaustive.”
 
 ## What it does
 
