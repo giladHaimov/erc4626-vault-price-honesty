@@ -8,7 +8,7 @@ import {MockAsset} from "../src/mock/MockAsset.sol";
 import {FailedFirstDepositorVault} from "../src/test-vaults/FailedFirstDepositorVault.sol";
 import {CorrectOffsetVault} from "../src/test-vaults/CorrectOffsetVault.sol";
 import {FailedPreviewLieVault} from "../src/test-vaults/FailedPreviewLieVault.sol";
-import {FixturesReport} from "../src/report/FixturesReport.sol";
+import {TestVaultReport} from "../src/report/TestVaultReport.sol";
 
 /// @notice EIP-4626 directional preview vs actual (and preview vs convertTo* for the planted liar).
 /// deposit/redeem: actual >= preview; mint/withdraw: actual cost/burn <= preview.
@@ -63,7 +63,7 @@ contract PreviewVsActualTest is Test {
         uint256 minted = vault.deposit(assets, alice);
         assertEq(minted, pDep, "OZ deposit follows previewDeposit");
 
-        FixturesReport.row(
+        TestVaultReport.row(
             "FailedPreviewLieVault",
             "PreviewVsActual",
             "ran",
@@ -73,7 +73,7 @@ contract PreviewVsActualTest is Test {
                 "convertToAssets; previewWithdraw<",
                 "convertToShares; previewRedeem>",
                 "convertToAssets; OZ deposit minted==lied preview=",
-                FixturesReport.e18(minted)
+                TestVaultReport.e18(minted)
             ),
             "FAIL (preview vs convertTo*; planted)",
             "existing LPs (OZ deposit mints the lied preview); integrators who treat convertTo* as the mint"
@@ -112,27 +112,27 @@ contract PreviewVsActualTest is Test {
     }
 
     function _reportPass(string memory subject) internal {
-        FixturesReport.row(
+        TestVaultReport.row(
             subject,
             "PreviewVsActual",
             "ran",
             string.concat(
                 "dep ",
-                FixturesReport.e18(lastDepActual),
+                TestVaultReport.e18(lastDepActual),
                 "/",
-                FixturesReport.e18(lastDepPreview),
+                TestVaultReport.e18(lastDepPreview),
                 "; mint ",
-                FixturesReport.e18(lastMintActual),
+                TestVaultReport.e18(lastMintActual),
                 "/",
-                FixturesReport.e18(lastMintPreview),
+                TestVaultReport.e18(lastMintPreview),
                 "; wd ",
-                FixturesReport.e18(lastWdActual),
+                TestVaultReport.e18(lastWdActual),
                 "/",
-                FixturesReport.e18(lastWdPreview),
+                TestVaultReport.e18(lastWdPreview),
                 "; red ",
-                FixturesReport.e18(lastRedActual),
+                TestVaultReport.e18(lastRedActual),
                 "/",
-                FixturesReport.e18(lastRedPreview)
+                TestVaultReport.e18(lastRedPreview)
             ),
             "PASS (directional)",
             "none named"

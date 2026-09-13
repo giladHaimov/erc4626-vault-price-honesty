@@ -7,7 +7,7 @@ import {ERC4626} from "@openzeppelin/contracts/token/ERC20/extensions/ERC4626.so
 import {MockAsset} from "../src/mock/MockAsset.sol";
 import {FailedFirstDepositorVault} from "../src/test-vaults/FailedFirstDepositorVault.sol";
 import {CorrectOffsetVault} from "../src/test-vaults/CorrectOffsetVault.sol";
-import {FixturesReport} from "../src/report/FixturesReport.sol";
+import {TestVaultReport} from "../src/report/TestVaultReport.sol";
 
 /// @notice Empty vault -> attacker 1 wei deposit + large gift -> victim large deposit.
 /// @dev OZ v5 uses (supply + 10**offset) / (assets + 1). Even offset 0 has a +1 virtual share.
@@ -34,23 +34,23 @@ contract FirstDepositorTest is Test {
 
         assertEq(victimShares, 0, "Baseline offset0: victim shares floor to 0");
 
-        FixturesReport.row(
+        TestVaultReport.row(
             "FailedFirstDepositorVault",
             "FirstDepositor",
             "ran",
             string.concat(
                 "attackerShares=",
-                FixturesReport.e18(attackerShares),
+                TestVaultReport.e18(attackerShares),
                 " donation=",
-                FixturesReport.e18(DONATION),
+                TestVaultReport.e18(DONATION),
                 " victimDeposit=",
-                FixturesReport.e18(VICTIM_DEPOSIT),
+                TestVaultReport.e18(VICTIM_DEPOSIT),
                 " victimShares=",
-                FixturesReport.e18(victimShares),
+                TestVaultReport.e18(victimShares),
                 " attackerPreviewRedeem=",
-                FixturesReport.e18(attackerRedeem),
+                TestVaultReport.e18(attackerRedeem),
                 " victimPreviewRedeem=",
-                FixturesReport.e18(victimRedeem)
+                TestVaultReport.e18(victimRedeem)
             ),
             "victim share count rounds to 0",
             "victim (almost no shares); attacker can redeem nearly the pot"
@@ -66,26 +66,26 @@ contract FirstDepositorTest is Test {
         // Same amounts that wipe Baseline to 0 still mint >0 here (offset virtual shares).
         assertGt(victimRedeem, 0, "CorrectOffsetVault: victim redeem value > 0");
 
-        FixturesReport.row(
+        TestVaultReport.row(
             "CorrectOffsetVault",
             "FirstDepositor",
             "ran",
             string.concat(
                 "attackerShares=",
-                FixturesReport.e18(attackerShares),
+                TestVaultReport.e18(attackerShares),
                 " donation=",
-                FixturesReport.e18(DONATION),
+                TestVaultReport.e18(DONATION),
                 " victimDeposit=",
-                FixturesReport.e18(VICTIM_DEPOSIT),
+                TestVaultReport.e18(VICTIM_DEPOSIT),
                 " victimShares=",
-                FixturesReport.e18(victimShares),
+                TestVaultReport.e18(victimShares),
                 " attackerPreviewRedeem=",
-                FixturesReport.e18(attackerRedeem),
+                TestVaultReport.e18(attackerRedeem),
                 " victimPreviewRedeem=",
-                FixturesReport.e18(victimRedeem)
+                TestVaultReport.e18(victimRedeem)
             ),
             "inflation muted (numbers only; not a safety claim)",
-            "none named (offset reduced the rounding wipeout in this fixture)"
+            "none named (offset reduced the rounding wipeout in this test vault)"
         );
     }
 

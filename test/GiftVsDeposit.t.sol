@@ -6,7 +6,7 @@ import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {MockAsset} from "../src/mock/MockAsset.sol";
 import {FailedFirstDepositorVault} from "../src/test-vaults/FailedFirstDepositorVault.sol";
 import {FailedStaleNavVault} from "../src/test-vaults/FailedStaleNavVault.sol";
-import {FixturesReport} from "../src/report/FixturesReport.sol";
+import {TestVaultReport} from "../src/report/TestVaultReport.sol";
 
 /// @notice Official deposit then plain transfer gift. Baseline counts gifts; StaleNav does not until poke.
 contract GiftVsDepositTest is Test {
@@ -43,21 +43,21 @@ contract GiftVsDepositTest is Test {
         assertEq(taAfter, bal);
         assertGt(priceAfter, priceBefore, "share price should rise after gift");
 
-        FixturesReport.row(
+        TestVaultReport.row(
             "FailedFirstDepositorVault",
             "GiftVsDeposit",
             "ran",
             string.concat(
                 "taBefore=",
-                FixturesReport.e18(taBefore),
+                TestVaultReport.e18(taBefore),
                 " taAfterGift=",
-                FixturesReport.e18(taAfter),
+                TestVaultReport.e18(taAfter),
                 " priceBefore=",
-                FixturesReport.e18(priceBefore),
+                TestVaultReport.e18(priceBefore),
                 " priceAfter=",
-                FixturesReport.e18(priceAfter),
+                TestVaultReport.e18(priceAfter),
                 " gift=",
-                FixturesReport.e18(gift)
+                TestVaultReport.e18(gift)
             ),
             "gifts counted",
             "later depositors pay higher price; existing LPs gain (not theft)"
@@ -92,21 +92,21 @@ contract GiftVsDepositTest is Test {
         uint256 taAfterPoke = vault.totalAssets();
         assertEq(taAfterPoke, balAfterGift);
 
-        FixturesReport.row(
+        TestVaultReport.row(
             "FailedStaleNavVault",
             "GiftVsDeposit",
             "ran",
             string.concat(
                 "taBefore=",
-                FixturesReport.e18(taBefore),
+                TestVaultReport.e18(taBefore),
                 " taAfterGift=",
-                FixturesReport.e18(taAfterGift),
+                TestVaultReport.e18(taAfterGift),
                 " balanceAfterGift=",
-                FixturesReport.e18(balAfterGift),
+                TestVaultReport.e18(balAfterGift),
                 " taAfterPoke=",
-                FixturesReport.e18(taAfterPoke),
+                TestVaultReport.e18(taAfterPoke),
                 " gap=",
-                FixturesReport.e18(balAfterGift - taAfterGift)
+                TestVaultReport.e18(balAfterGift - taAfterGift)
             ),
             "stale cache until poke (architecture/helper-gap)",
             "none named until someone acts on the stale number"

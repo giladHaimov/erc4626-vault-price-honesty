@@ -37,7 +37,7 @@ Tagline: *I measure 4626 pots. I don’t sell a cure. I do say who gets hurt whe
 
 ## Test vaults (Phase 1)
 
-| Fixture | Role |
+| Test vault | Role |
 |---|---|
 | `FailedFirstDepositorVault` | Plain OZ, offset 0. We expect first-depositor wipeout (unfair mint). Preview should still pass. |
 | `CorrectOffsetVault` | Same + `_decimalsOffset() == 3`. First-depositor inflation should be muted. |

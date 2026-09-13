@@ -6,7 +6,7 @@ import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {MockAsset} from "../src/mock/MockAsset.sol";
 import {FailedFirstDepositorVault} from "../src/test-vaults/FailedFirstDepositorVault.sol";
 import {FailedStaleNavVault} from "../src/test-vaults/FailedStaleNavVault.sol";
-import {FixturesReport} from "../src/report/FixturesReport.sol";
+import {TestVaultReport} from "../src/report/TestVaultReport.sol";
 
 /// @notice Measurable helper gap: balance - totalAssets. StaleNav opens on gift, closes on poke.
 contract HelperGapTest is Test {
@@ -42,19 +42,19 @@ contract HelperGapTest is Test {
         uint256 gapAfter = asset.balanceOf(address(vault)) - vault.totalAssets();
         assertEq(gapAfter, 0, "gap closes after poke");
 
-        FixturesReport.row(
+        TestVaultReport.row(
             "FailedStaleNavVault",
             "HelperGap",
             "ran",
             string.concat(
                 "balance=",
-                FixturesReport.e18(bal),
+                TestVaultReport.e18(bal),
                 " totalAssets=",
-                FixturesReport.e18(ta),
+                TestVaultReport.e18(ta),
                 " gapOpen=",
-                FixturesReport.e18(gap),
+                TestVaultReport.e18(gap),
                 " gapAfterPoke=",
-                FixturesReport.e18(gapAfter)
+                TestVaultReport.e18(gapAfter)
             ),
             "gap open then closed (stale cache)",
             "none named (architecture/stale cache, not a helper lie)"
@@ -77,11 +77,11 @@ contract HelperGapTest is Test {
         uint256 ta = vault.totalAssets();
         assertEq(ta, bal, "Baseline totalAssets == balance; no separate helper");
 
-        FixturesReport.row(
+        TestVaultReport.row(
             "FailedFirstDepositorVault",
             "HelperGap",
             "N/A",
-            string.concat("totalAssets=", FixturesReport.e18(ta), " == balance=", FixturesReport.e18(bal), " (no separate helper)"),
+            string.concat("totalAssets=", TestVaultReport.e18(ta), " == balance=", TestVaultReport.e18(bal), " (no separate helper)"),
             "N/A (no helper)",
             "none named"
         );

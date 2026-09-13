@@ -5,7 +5,7 @@ import {Test} from "forge-std/Test.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {MockAsset} from "../src/mock/MockAsset.sol";
 import {FailedFirstDepositorVault} from "../src/test-vaults/FailedFirstDepositorVault.sol";
-import {FixturesReport} from "../src/report/FixturesReport.sol";
+import {TestVaultReport} from "../src/report/TestVaultReport.sol";
 
 /// @notice Alice deposits, redeems ALL, then tokens are transferred in while supply==0; Bob deposits.
 /// Do NOT fail this vault for leftover. Report facts. Report facts. Who-is-hurt: usually none named.
@@ -51,20 +51,20 @@ contract LeftoverEmptyTest is Test {
 
         string memory facts = string.concat(
             "aliceShares=",
-            FixturesReport.e18(aliceShares),
+            TestVaultReport.e18(aliceShares),
             " aliceRedeem=",
-            FixturesReport.e18(aliceRedeemAssets),
+            TestVaultReport.e18(aliceRedeemAssets),
             " leftoverAtEmpty=",
-            FixturesReport.e18(leftoverAtEmpty),
+            TestVaultReport.e18(leftoverAtEmpty),
             " bobShares=",
             vm.toString(bobShares),
             " bobDeposit=",
-            FixturesReport.e18(bobAssets),
+            TestVaultReport.e18(bobAssets),
             " bobPreviewRedeem=",
-            FixturesReport.e18(bobRedeemValue)
+            TestVaultReport.e18(bobRedeemValue)
         );
 
-        FixturesReport.row(
+        TestVaultReport.row(
             "FailedFirstDepositorVault",
             "LeftoverEmpty",
             "ran",

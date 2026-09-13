@@ -4,7 +4,7 @@ pragma solidity ^0.8.24;
 import {Vm} from "forge-std/Vm.sol";
 
 /// @notice Machine appendix. Humans read reports/test-vaults.md.
-library FixturesReport {
+library TestVaultReport {
     address private constant VM_ADDR = address(uint160(uint256(keccak256("hevm cheat code"))));
 
     string internal constant PATH = "reports/_generated.md";
