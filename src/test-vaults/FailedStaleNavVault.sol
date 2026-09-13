@@ -5,7 +5,17 @@ import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import {ERC4626} from "@openzeppelin/contracts/token/ERC20/extensions/ERC4626.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
-/// @notice Cached NAV. A gift does not move price until poke().
+/// @notice FailedStaleNavVault
+///
+/// What it is: OpenZeppelin ERC-4626 with a cached totalAssets (NAV).
+/// Why Failed*: we expect the gift case (and helper-gap case) to fail until poke().
+///
+/// How it fails:
+///   deposit/withdraw update the cache. A plain token gift does not.
+///   totalAssets stays stale. Share price does not move.
+///   poke() copies the real token balance into the cache.
+///
+/// Bad outcome: anyone who reads totalAssets / share price before poke sees the wrong number.
 contract FailedStaleNavVault is ERC4626 {
     uint256 public cachedAssets;
 

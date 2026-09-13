@@ -5,7 +5,18 @@ import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import {ERC4626} from "@openzeppelin/contracts/token/ERC20/extensions/ERC4626.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
-/// @notice preview* lies vs convertTo*. OZ deposit/mint follow preview*, so the lie is minted.
+/// @notice FailedPreviewLieVault
+///
+/// What it is: OpenZeppelin ERC-4626 whose preview* helpers lie vs convertTo*.
+/// Why Failed*: we expect the preview-vs-actual case to fail.
+///
+/// How it fails:
+///   previewDeposit / previewRedeem overstate shares / assets.
+///   previewMint / previewWithdraw understate cost.
+///   OpenZeppelin deposit() calls previewDeposit(), so the lie is minted.
+///
+/// Bad outcome: unfair share mint. Existing holders are diluted. Anyone who trusts
+/// convertTo* as "what deposit will mint" is wrong.
 contract FailedPreviewLieVault is ERC4626 {
     constructor(IERC20 asset_) ERC20("Failed Preview Lie Vault", "failPREV") ERC4626(asset_) {}
 

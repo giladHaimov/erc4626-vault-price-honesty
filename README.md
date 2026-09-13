@@ -14,14 +14,19 @@ Not an audit. Not a patched vault.
 <tr><td bgcolor="#ffcdd2"><b>FAILED one case — sUSDe (Ethena)</b></td></tr>
 <tr><td bgcolor="#ffcdd2">
 <b>Which case:</b> gift vs deposit.<br>
-<b>What happened:</b> we deposited, then transferred the same token in. <code>totalAssets</code> and share price went up.<br>
-<b>Bad outcome:</b> later depositors pay a higher share price. Existing holders gain. Not theft — still a real price move from a gift.
+<b>What we did:</b> deposit, then send the same token in as a gift.<br>
+<b>What happened:</b> share price went up.<br>
+<b>Bad outcome:</b> the next depositor pays more for the same share.
 </td></tr>
 </table>
 
-Every other live vault that actually ran: preview matched deposit, gifts not counted.
+Preview: no live vault we tested lied.
 
-Leftover-empty and first-depositor were **not run** on live pots (we will not empty a real vault). Snapshot could not drive sUSDC, Gauntlet USDC Prime, two Euler EVK vaults, yvUSDT (`asset()` / run revert on the public RPC; `cast call` works).
+Empty-pot attacks (leftover / first depositor): not run. Those vaults already have deposits. We will not drain them.
+
+Other vaults we could test: gift did not move price.
+
+Five vaults we could not test (sUSDC, Gauntlet Prime, two Euler, yvUSDT): public RPC snapshot broke. That is our RPC, not their bug.
 
 Full numbers: [`reports/live.md`](reports/live.md). Local proof: [`reports/test-vaults.md`](reports/test-vaults.md).
 
