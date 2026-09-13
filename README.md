@@ -125,6 +125,9 @@ OpenZeppelin 4626 with a cached `totalAssets`.
 
 Human write-up: [`reports/test-vaults.md`](reports/test-vaults.md).
 
+Empty-pot unfairness (first-depositor + leftover-empty) is also fuzzed in `test/EmptyPotUnfairness.t.sol`. Gift-dominates → 0 shares. Leftover larger than the next deposit → 0 shares. Offset 3 mutes that wipeout in the unit-test band, not for every pair.
+
+
 ## Live tests in more detail
 
 Default path is a **mainnet snapshot at a pinned block**. One `createSelectFork` for the whole allowlist. The block number is stamped into [`reports/live.md`](reports/live.md).
