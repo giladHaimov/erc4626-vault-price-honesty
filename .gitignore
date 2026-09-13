@@ -5,3 +5,5 @@ broadcast/
 .idea
 .DS_Store
 delete_me
+
+reports/_generated.md

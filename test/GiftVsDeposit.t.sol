@@ -3,9 +3,9 @@ pragma solidity ^0.8.24;
 
 import {Test} from "forge-std/Test.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import {MockAsset} from "../src/fixtures/MockAsset.sol";
-import {BaselineVault} from "../src/fixtures/BaselineVault.sol";
-import {StaleNavVault} from "../src/fixtures/StaleNavVault.sol";
+import {MockAsset} from "../src/test-vaults/MockAsset.sol";
+import {CorrectOzVault} from "../src/test-vaults/CorrectOzVault.sol";
+import {FailedStaleNavVault} from "../src/test-vaults/FailedStaleNavVault.sol";
 import {FixturesReport} from "../src/report/FixturesReport.sol";
 
 /// @notice Official deposit then plain transfer gift. Baseline counts gifts; StaleNav does not until poke.
@@ -21,7 +21,7 @@ contract GiftVsDepositTest is Test {
     }
 
     function test_Baseline_giftMovesTotalAssets() public {
-        BaselineVault vault = new BaselineVault(IERC20(address(asset)));
+        CorrectOzVault vault = new CorrectOzVault(IERC20(address(asset)));
 
         vm.startPrank(alice);
         asset.approve(address(vault), type(uint256).max);
@@ -44,7 +44,7 @@ contract GiftVsDepositTest is Test {
         assertGt(priceAfter, priceBefore, "share price should rise after gift");
 
         FixturesReport.row(
-            "BaselineVault",
+            "CorrectOzVault",
             "GiftVsDeposit",
             "ran",
             string.concat(
@@ -64,8 +64,8 @@ contract GiftVsDepositTest is Test {
         );
     }
 
-    function test_StaleNav_giftDoesNotMoveUntilPoke() public {
-        StaleNavVault vault = new StaleNavVault(IERC20(address(asset)));
+    function test_FailedStaleNav_giftDoesNotMoveUntilPoke() public {
+        FailedStaleNavVault vault = new FailedStaleNavVault(IERC20(address(asset)));
 
         vm.startPrank(alice);
         asset.approve(address(vault), type(uint256).max);
@@ -93,7 +93,7 @@ contract GiftVsDepositTest is Test {
         assertEq(taAfterPoke, balAfterGift);
 
         FixturesReport.row(
-            "StaleNavVault",
+            "FailedStaleNavVault",
             "GiftVsDeposit",
             "ran",
             string.concat(

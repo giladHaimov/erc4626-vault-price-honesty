@@ -4,9 +4,9 @@ pragma solidity ^0.8.24;
 import {Test} from "forge-std/Test.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {ERC4626} from "@openzeppelin/contracts/token/ERC20/extensions/ERC4626.sol";
-import {MockAsset} from "../src/fixtures/MockAsset.sol";
-import {BaselineVault} from "../src/fixtures/BaselineVault.sol";
-import {OffsetVault} from "../src/fixtures/OffsetVault.sol";
+import {MockAsset} from "../src/test-vaults/MockAsset.sol";
+import {CorrectOzVault} from "../src/test-vaults/CorrectOzVault.sol";
+import {CorrectOffsetVault} from "../src/test-vaults/CorrectOffsetVault.sol";
 import {FixturesReport} from "../src/report/FixturesReport.sol";
 
 /// @notice Empty vault -> attacker 1 wei deposit + large gift -> victim large deposit.
@@ -28,14 +28,14 @@ contract FirstDepositorTest is Test {
     }
 
     function test_Baseline_victimRoundsBadly() public {
-        BaselineVault vault = new BaselineVault(IERC20(address(asset)));
+        CorrectOzVault vault = new CorrectOzVault(IERC20(address(asset)));
         (uint256 attackerShares, uint256 victimShares, uint256 attackerRedeem, uint256 victimRedeem) =
             _runInflation(vault);
 
         assertEq(victimShares, 0, "Baseline offset0: victim shares floor to 0");
 
         FixturesReport.row(
-            "BaselineVault",
+            "CorrectOzVault",
             "FirstDepositor",
             "ran",
             string.concat(
@@ -58,16 +58,16 @@ contract FirstDepositorTest is Test {
     }
 
     function test_Offset_victimGetsMeaningfulShares() public {
-        OffsetVault vault = new OffsetVault(IERC20(address(asset)));
+        CorrectOffsetVault vault = new CorrectOffsetVault(IERC20(address(asset)));
         (uint256 attackerShares, uint256 victimShares, uint256 attackerRedeem, uint256 victimRedeem) =
             _runInflation(vault);
 
-        assertGt(victimShares, 0, "OffsetVault: victim should get shares");
+        assertGt(victimShares, 0, "CorrectOffsetVault: victim should get shares");
         // Same amounts that wipe Baseline to 0 still mint >0 here (offset virtual shares).
-        assertGt(victimRedeem, 0, "OffsetVault: victim redeem value > 0");
+        assertGt(victimRedeem, 0, "CorrectOffsetVault: victim redeem value > 0");
 
         FixturesReport.row(
-            "OffsetVault",
+            "CorrectOffsetVault",
             "FirstDepositor",
             "ran",
             string.concat(

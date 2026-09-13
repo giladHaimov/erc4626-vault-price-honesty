@@ -3,11 +3,11 @@ pragma solidity ^0.8.24;
 
 import {Vm} from "forge-std/Vm.sol";
 
-/// @notice Shared writer for reports/fixtures.md (vault test report, not an audit).
+/// @notice Machine appendix. Humans read reports/test-vaults.md.
 library FixturesReport {
     address private constant VM_ADDR = address(uint160(uint256(keccak256("hevm cheat code"))));
 
-    string internal constant PATH = "reports/fixtures.md";
+    string internal constant PATH = "reports/_generated.md";
 
     function ensureHeader() internal {
         Vm vm = Vm(VM_ADDR);
@@ -17,10 +17,9 @@ library FixturesReport {
         vm.writeFile(
             PATH,
             string.concat(
-                "# ERC-4626 vault test report (local fixtures)\n\n",
-                "This is a **vault test report**, not an audit.\n",
-                "Judgment is **who is hurt**. If no victim is named by the numbers, write `none named`.\n\n",
-                "| subject | case | ran/N/A | facts | spec | who is hurt |\n",
+                "# Machine appendix (not the human report)\n\n",
+                "Read [test-vaults.md](test-vaults.md) instead.\n\n",
+                "| vault | case | ran | facts | spec | who is hurt |\n",
                 "|---|---|---|---|---|---|\n"
             )
         );
@@ -56,7 +55,6 @@ library FixturesReport {
         );
     }
 
-    /// @dev 1000e18 -> "1000e18"; 1 -> "1"; leftover dust -> "750e18+1"
     function e18(uint256 x) internal pure returns (string memory) {
         Vm vm = Vm(VM_ADDR);
         if (x == 0) return "0";

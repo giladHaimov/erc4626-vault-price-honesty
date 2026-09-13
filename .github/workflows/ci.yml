@@ -16,7 +16,7 @@ jobs:
         with:
           version: stable
       - run: forge --version
-      - name: Fixture report (no RPC)
+      - name: Test-vault report (no RPC)
         run: |
-          rm -f reports/fixtures.md
+          rm -f reports/_generated.md
           forge test --jobs 1 -vv

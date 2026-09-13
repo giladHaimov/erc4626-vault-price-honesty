@@ -3,7 +3,7 @@ pragma solidity ^0.8.24;
 
 import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
-/// @notice Mintable ERC20 used as the vault underlying in local fixtures.
+/// @notice Fake ERC-20 the local tests mint. Not a vault.
 contract MockAsset is ERC20 {
     constructor(string memory name_, string memory symbol_) ERC20(name_, symbol_) {}
 

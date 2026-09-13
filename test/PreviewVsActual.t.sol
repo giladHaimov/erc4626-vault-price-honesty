@@ -4,10 +4,10 @@ pragma solidity ^0.8.24;
 import {Test} from "forge-std/Test.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {ERC4626} from "@openzeppelin/contracts/token/ERC20/extensions/ERC4626.sol";
-import {MockAsset} from "../src/fixtures/MockAsset.sol";
-import {BaselineVault} from "../src/fixtures/BaselineVault.sol";
-import {OffsetVault} from "../src/fixtures/OffsetVault.sol";
-import {PreviewLiarVault} from "../src/fixtures/PreviewLiarVault.sol";
+import {MockAsset} from "../src/test-vaults/MockAsset.sol";
+import {CorrectOzVault} from "../src/test-vaults/CorrectOzVault.sol";
+import {CorrectOffsetVault} from "../src/test-vaults/CorrectOffsetVault.sol";
+import {FailedPreviewLieVault} from "../src/test-vaults/FailedPreviewLieVault.sol";
 import {FixturesReport} from "../src/report/FixturesReport.sol";
 
 /// @notice EIP-4626 directional preview vs actual (and preview vs convertTo* for the planted liar).
@@ -31,19 +31,19 @@ contract PreviewVsActualTest is Test {
     }
 
     function test_Baseline_previewVsActual_passes() public {
-        BaselineVault vault = new BaselineVault(IERC20(address(asset)));
+        CorrectOzVault vault = new CorrectOzVault(IERC20(address(asset)));
         _runDirectional(vault);
-        _reportPass("BaselineVault");
+        _reportPass("CorrectOzVault");
     }
 
     function test_Offset_previewVsActual_passes() public {
-        OffsetVault vault = new OffsetVault(IERC20(address(asset)));
+        CorrectOffsetVault vault = new CorrectOffsetVault(IERC20(address(asset)));
         _runDirectional(vault);
-        _reportPass("OffsetVault");
+        _reportPass("CorrectOffsetVault");
     }
 
-    function test_PreviewLiar_caught_vs_convertTo() public {
-        PreviewLiarVault vault = new PreviewLiarVault(IERC20(address(asset)));
+    function test_FailedPreviewLie_caught_vs_convertTo() public {
+        FailedPreviewLieVault vault = new FailedPreviewLieVault(IERC20(address(asset)));
 
         vm.startPrank(alice);
         asset.approve(address(vault), type(uint256).max);
@@ -64,7 +64,7 @@ contract PreviewVsActualTest is Test {
         assertEq(minted, pDep, "OZ deposit follows previewDeposit");
 
         FixturesReport.row(
-            "PreviewLiarVault",
+            "FailedPreviewLieVault",
             "PreviewVsActual",
             "ran",
             string.concat(

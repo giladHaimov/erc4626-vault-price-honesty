@@ -3,9 +3,9 @@ pragma solidity ^0.8.24;
 
 import {Test} from "forge-std/Test.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import {MockAsset} from "../src/fixtures/MockAsset.sol";
-import {BaselineVault} from "../src/fixtures/BaselineVault.sol";
-import {StaleNavVault} from "../src/fixtures/StaleNavVault.sol";
+import {MockAsset} from "../src/test-vaults/MockAsset.sol";
+import {CorrectOzVault} from "../src/test-vaults/CorrectOzVault.sol";
+import {FailedStaleNavVault} from "../src/test-vaults/FailedStaleNavVault.sol";
 import {FixturesReport} from "../src/report/FixturesReport.sol";
 
 /// @notice Measurable helper gap: balance - totalAssets. StaleNav opens on gift, closes on poke.
@@ -20,8 +20,8 @@ contract HelperGapTest is Test {
         asset.mint(donor, 50_000e18);
     }
 
-    function test_StaleNav_gapOpensAndCloses() public {
-        StaleNavVault vault = new StaleNavVault(IERC20(address(asset)));
+    function test_FailedStaleNav_gapOpensAndCloses() public {
+        FailedStaleNavVault vault = new FailedStaleNavVault(IERC20(address(asset)));
 
         vm.startPrank(alice);
         asset.approve(address(vault), type(uint256).max);
@@ -43,7 +43,7 @@ contract HelperGapTest is Test {
         assertEq(gapAfter, 0, "gap closes after poke");
 
         FixturesReport.row(
-            "StaleNavVault",
+            "FailedStaleNavVault",
             "HelperGap",
             "ran",
             string.concat(
@@ -62,7 +62,7 @@ contract HelperGapTest is Test {
     }
 
     function test_Baseline_noHelperGap_NA() public {
-        BaselineVault vault = new BaselineVault(IERC20(address(asset)));
+        CorrectOzVault vault = new CorrectOzVault(IERC20(address(asset)));
 
         vm.startPrank(alice);
         asset.approve(address(vault), type(uint256).max);
@@ -78,7 +78,7 @@ contract HelperGapTest is Test {
         assertEq(ta, bal, "Baseline totalAssets == balance; no separate helper");
 
         FixturesReport.row(
-            "BaselineVault",
+            "CorrectOzVault",
             "HelperGap",
             "N/A",
             string.concat("totalAssets=", FixturesReport.e18(ta), " == balance=", FixturesReport.e18(bal), " (no separate helper)"),

@@ -1,6 +1,6 @@
 # PRD — ERC-4626 vault test report (Foundry)
 
-Status: P1 fixtures + P2 live table published (block 25967333). Not an audit. Not a patched vault.
+Status: P1 test vaults + P2 live table published (block 25967333). Not an audit. Not a patched vault.
 
 ## Goal
 
@@ -20,7 +20,7 @@ Tagline: *I measure 4626 pots. I don’t sell a cure. I do say who gets hurt whe
 
 ## Product
 
-1. **Local fixtures (required, this phase).** One boring-correct vault + planted-fault vaults. This is the proof the tool works. Forks are the demo.
+1. **Local test vaults (required, this phase).** One boring-correct vault + planted-fault vaults. This is the proof the tool works. Forks are the demo.
 2. **Live forks (later).** 10–15 mainnet vaults at pinned blocks. Mocks only if `deposit` is gated. Each case: ran / N/A + why.
 3. **Report.** Markdown table. Facts first. One judgment column: who is hurt.
 
@@ -35,14 +35,14 @@ Tagline: *I measure 4626 pots. I don’t sell a cure. I do say who gets hurt whe
 4. **First-depositor inflation** — empty donation. Included so it is not forgotten.
 5. **Helper gap** — only if we can decode the position. `totalAssets ≠ balanceOf(vault)` is usually architecture. A gap that opens and closes over time is the measurable risk. If we cannot decode: **not enough data**, not “helper lie.”
 
-## Fixtures (Phase 1)
+## Test vaults (Phase 1)
 
 | Fixture | Role |
 |---|---|
-| `BaselineVault` | Boring OZ ERC-4626, offset 0. Industry default. Preview should pass. Gift counted. Leftover-empty and first-depositor are *measurable facts*, not “OZ is broken.” |
-| `OffsetVault` | Same + `_decimalsOffset() == 3`. First-depositor inflation should be muted. |
-| `PreviewLiarVault` | `previewDeposit` (and siblings) optimistic vs the real mint. Must fail case 1. |
-| `StaleNavVault` | Cached `totalAssets`; gifts do not move NAV until `poke()`. Gift case: ignored. Helper-gap: `totalAssets ≠ balance`. |
+| `CorrectOzVault` | Boring OZ ERC-4626, offset 0. Industry default. Preview should pass. Gift counted. Leftover-empty and first-depositor are *measurable facts*, not “OZ is broken.” |
+| `CorrectOffsetVault` | Same + `_decimalsOffset() == 3`. First-depositor inflation should be muted. |
+| `FailedPreviewLieVault` | `previewDeposit` (and siblings) optimistic vs the real mint. Must fail case 1. |
+| `FailedStaleNavVault` | Cached `totalAssets`; gifts do not move NAV until `poke()`. Gift case: ignored. Helper-gap: `totalAssets ≠ balance`. |
 
 Asset: a mintable mock ERC-20. No mainnet RPC in Phase 1.
 
@@ -54,7 +54,7 @@ If who-is-hurt is unknown, write `none named` — do not invent.
 
 ## Phases
 
-- **P1** — this repo boots: Foundry, fixtures, local tests, `reports/fixtures.md` written by tests. `forge test` green without RPC.
+- **P1** — this repo boots: Foundry, test vaults, local tests, `reports/test-vaults.md` written by tests. `forge test` green without RPC.
 - **P2** — live-fork harness + allowlist of 10–15 addresses + pinned blocks + per-case N/A reasons. Needs `MAINNET_RPC_URL`.
 - **P3** — README hook + 10+ live vaults that ran. GitHub face / pins are packaging, not this repo.
 

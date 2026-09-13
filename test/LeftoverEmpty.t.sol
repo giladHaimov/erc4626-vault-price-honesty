@@ -3,8 +3,8 @@ pragma solidity ^0.8.24;
 
 import {Test} from "forge-std/Test.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import {MockAsset} from "../src/fixtures/MockAsset.sol";
-import {BaselineVault} from "../src/fixtures/BaselineVault.sol";
+import {MockAsset} from "../src/test-vaults/MockAsset.sol";
+import {CorrectOzVault} from "../src/test-vaults/CorrectOzVault.sol";
 import {FixturesReport} from "../src/report/FixturesReport.sol";
 
 /// @notice Alice deposits, redeems ALL, then tokens are transferred in while supply==0; Bob deposits.
@@ -12,14 +12,14 @@ import {FixturesReport} from "../src/report/FixturesReport.sol";
 /// @dev Do not report convertToAssets(1e18) when supply is 1 share — that number is meaningless.
 contract LeftoverEmptyTest is Test {
     MockAsset internal asset;
-    BaselineVault internal vault;
+    CorrectOzVault internal vault;
     address internal alice = makeAddr("alice");
     address internal bob = makeAddr("bob");
     address internal donor = makeAddr("donor");
 
     function setUp() public {
         asset = new MockAsset("Mock USD", "mUSD");
-        vault = new BaselineVault(IERC20(address(asset)));
+        vault = new CorrectOzVault(IERC20(address(asset)));
         asset.mint(alice, 10_000e18);
         asset.mint(bob, 10_000e18);
         asset.mint(donor, 5_000e18);
@@ -65,7 +65,7 @@ contract LeftoverEmptyTest is Test {
         );
 
         FixturesReport.row(
-            "BaselineVault",
+            "CorrectOzVault",
             "LeftoverEmpty",
             "ran",
             facts,
