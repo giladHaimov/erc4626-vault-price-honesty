@@ -6,11 +6,11 @@
 
 I started this effort trying to **fix** several ERC-4626 share-price honesty issues. They are sort of known in the community, and they also show up in OpenZeppelin’s gold-copy vault. They mainly circle around these scenarios:
 
-- **Empty pot, next depositor wiped.** Share supply is gone (everyone redeemed, last holder left, leftover dust after a gift). The next depositor can get far too few shares — or zero — for a real deposit. A dust share can take almost the pot.
-- **Leftover tokens after the last redeem.** Shares burn on withdraw. Tokens can still sit in the vault. The next mint is a different price. Sometimes the next depositor receives that leftover. Sometimes they get nothing.
-- **Gifts counted as yield.** Tokens arrive via plain `transfer`, not `deposit`. If the vault counts them, share price jumps. Later depositors pay more. Existing holders gain. That can be a product choice — the report still shows the move.
-- **Preview does not match the real mint.** `preview*` can lie versus `convertTo*` or versus what `deposit()` actually mints. Extra shares dilute holders. Integrators who trusted the preview get the wrong count.
-- **Stale or split NAV.** `totalAssets` is not always the tokens on the vault (a cache, a DSR pot, Yearn debt, Morpho markets). Anyone who reads price before the number updates sees the wrong share price.
+- **Empty pot, next depositor wiped.** Nobody holds shares anymore. Everyone left, or someone dropped a gift onto an almost-empty vault. The next person who deposits real tokens can get far too few shares, or zero. Whoever still holds a tiny leftover share can take almost the whole pot.
+- **Leftover tokens after the last redeem.** The last user redeems. All shares burn. Some tokens can still sit in the vault. The next depositor then pays a different price. Sometimes they receive those leftover tokens. Sometimes they get nothing.
+- **Gifts counted as yield.** A gift is tokens sent with a plain transfer, not a deposit. If the vault treats that gift as part of the pot, share price goes up. Later depositors pay more. People already in gain. That may be what the designer wanted. The report still shows it.
+- **Preview does not match the real mint.** The vault can *preview* one number and then *mint* another. Extra shares dilute people already in. Anyone who trusted the preview gets the wrong count.
+- **Stale or split pot size.** The vault has a number, `totalAssets`, that it treats as “how big is the pot.” That number is not always the tokens sitting on the contract. It might be a cached figure, or tokens parked in Maker, Yearn, or Morpho. If the number is stale, anyone who reads the share price sees the wrong price.
 
 After several attempts I reached the conclusion I cannot provide a solid solution to share with others. Such a fix relies on per-vault assumptions so much that extracting commonalities into a base contract is impossible. You need to know how the vault decides how to invest — a DAO-like majority vote? an external governance authority? How should it treat gifts (tokens received by direct transfer rather than deposit)? What to do if shares have gone to zero (ERC-4626 burns shares on redeem)? The questions kept stacking. Any non-trivial solution has to sit on that vault’s own assumptions, so there is no honest shared “fix.”
 
