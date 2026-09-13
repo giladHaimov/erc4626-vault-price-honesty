@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1002" height="596" viewBox="0 0 1002 596">
+<rect width="100%" height="100%" fill="#ffffff"/>
+<text x="8" y="20" font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" font-weight="700" fill="#111">Live vaults at block 25967333  —  green = all ran cases passed   red = at least one failed   gray = did not run</text>
+<rect x="1" y="28" width="1000" height="36" fill="#374151"/>
+<text x="13" y="52" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="700" fill="#fff"></text>
+<text x="83" y="52" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="700" fill="#fff">vault</text>
+<text x="363" y="52" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="700" fill="#fff">which case failed</text>
+<text x="583" y="52" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="700" fill="#fff">bad outcome (simple)</text>
+<rect x="1" y="64" width="1000" height="44" fill="#86efac"/>
+<line x1="1" y1="108" x2="1001" y2="108" stroke="#c5c5c5" stroke-width="1"/>
+<text x="13" y="92" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="700" fill="#111">PASS</text>
+<text x="83" y="92" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="400" fill="#111">sDAI (Spark)</text>
+<text x="363" y="92" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="400" fill="#111">none</text>
+<text x="583" y="92" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="400" fill="#111">—</text>
+<rect x="1" y="108" width="1000" height="44" fill="#86efac"/>
+<line x1="1" y1="152" x2="1001" y2="152" stroke="#c5c5c5" stroke-width="1"/>
+<text x="13" y="136" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="700" fill="#111">PASS</text>
+<text x="83" y="136" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="400" fill="#111">sUSDS (Spark)</text>
+<text x="363" y="136" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="400" fill="#111">none</text>
+<text x="583" y="136" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="400" fill="#111">—</text>
+<rect x="1" y="152" width="1000" height="44" fill="#fca5a5"/>
+<line x1="1" y1="196" x2="1001" y2="196" stroke="#c5c5c5" stroke-width="1"/>
+<text x="13" y="180" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="700" fill="#111">FAIL</text>
+<text x="83" y="180" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="400" fill="#111">sUSDe (Ethena)</text>
+<text x="363" y="180" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="400" fill="#111">gift vs deposit</text>
+<text x="583" y="180" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="400" fill="#111">share price went up — next depositor pays more</text>
+<rect x="1" y="196" width="1000" height="44" fill="#86efac"/>
+<line x1="1" y1="240" x2="1001" y2="240" stroke="#c5c5c5" stroke-width="1"/>
+<text x="13" y="224" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="700" fill="#111">PASS</text>
+<text x="83" y="224" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="400" fill="#111">yvUSDC-1 (Yearn V3)</text>
+<text x="363" y="224" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="400" fill="#111">none</text>
+<text x="583" y="224" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="400" fill="#111">—</text>
+<rect x="1" y="240" width="1000" height="44" fill="#86efac"/>
+<line x1="1" y1="284" x2="1001" y2="284" stroke="#c5c5c5" stroke-width="1"/>
+<text x="13" y="268" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="700" fill="#111">PASS</text>
+<text x="83" y="268" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="400" fill="#111">yvWETH-1 (Yearn V3)</text>
+<text x="363" y="268" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="400" fill="#111">none</text>
+<text x="583" y="268" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="400" fill="#111">—</text>
+<rect x="1" y="284" width="1000" height="44" fill="#86efac"/>
+<line x1="1" y1="328" x2="1001" y2="328" stroke="#c5c5c5" stroke-width="1"/>
+<text x="13" y="312" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="700" fill="#111">PASS</text>
+<text x="83" y="312" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="400" fill="#111">yvDAI-1 (Yearn V3)</text>
+<text x="363" y="312" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="400" fill="#111">none</text>
+<text x="583" y="312" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="400" fill="#111">—</text>
+<rect x="1" y="328" width="1000" height="44" fill="#e5e7eb"/>
+<line x1="1" y1="372" x2="1001" y2="372" stroke="#c5c5c5" stroke-width="1"/>
+<text x="13" y="356" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="700" fill="#111">SKIP</text>
+<text x="83" y="356" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="400" fill="#111">yvUSD (Yearn V3)</text>
+<text x="363" y="356" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="400" fill="#111">did not run</text>
+<text x="583" y="356" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="400" fill="#111">deposit gated</text>
+<rect x="1" y="372" width="1000" height="44" fill="#86efac"/>
+<line x1="1" y1="416" x2="1001" y2="416" stroke="#c5c5c5" stroke-width="1"/>
+<text x="13" y="400" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="700" fill="#111">PASS</text>
+<text x="83" y="400" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="400" fill="#111">yvUSDS-1 (Yearn V3)</text>
+<text x="363" y="400" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="400" fill="#111">none</text>
+<text x="583" y="400" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="400" fill="#111">—</text>
+<rect x="1" y="416" width="1000" height="44" fill="#86efac"/>
+<line x1="1" y1="460" x2="1001" y2="460" stroke="#c5c5c5" stroke-width="1"/>
+<text x="13" y="444" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="700" fill="#111">PASS</text>
+<text x="83" y="444" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="400" fill="#111">Steakhouse USDC (Morpho)</text>
+<text x="363" y="444" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="400" fill="#111">none</text>
+<text x="583" y="444" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="400" fill="#111">—</text>
+<rect x="1" y="460" width="1000" height="44" fill="#86efac"/>
+<line x1="1" y1="504" x2="1001" y2="504" stroke="#c5c5c5" stroke-width="1"/>
+<text x="13" y="488" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="700" fill="#111">PASS</text>
+<text x="83" y="488" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="400" fill="#111">Gauntlet USDC Core (Morpho)</text>
+<text x="363" y="488" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="400" fill="#111">none</text>
+<text x="583" y="488" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="400" fill="#111">—</text>
+<rect x="1" y="504" width="1000" height="44" fill="#86efac"/>
+<line x1="1" y1="548" x2="1001" y2="548" stroke="#c5c5c5" stroke-width="1"/>
+<text x="13" y="532" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="700" fill="#111">PASS</text>
+<text x="83" y="532" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="400" fill="#111">sfrxETH</text>
+<text x="363" y="532" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="400" fill="#111">none</text>
+<text x="583" y="532" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="400" fill="#111">—</text>
+<rect x="1" y="548" width="1000" height="44" fill="#e5e7eb"/>
+<line x1="1" y1="592" x2="1001" y2="592" stroke="#c5c5c5" stroke-width="1"/>
+<text x="13" y="576" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="700" fill="#111">SKIP</text>
+<text x="83" y="576" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="400" fill="#111">sUSDC / Gauntlet Prime / 2 Euler / yvUSDT</text>
+<text x="363" y="576" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="400" fill="#111">did not run</text>
+<text x="583" y="576" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="400" fill="#111">public RPC snapshot broke — not their bug</text>
+<line x1="71" y1="28" x2="71" y2="594" stroke="#c5c5c5" stroke-width="1"/>
+<line x1="351" y1="28" x2="351" y2="594" stroke="#c5c5c5" stroke-width="1"/>
+<line x1="571" y1="28" x2="571" y2="594" stroke="#c5c5c5" stroke-width="1"/>
+<rect x="1" y="28" width="1000" height="566" fill="none" stroke="#9ca3af" stroke-width="1"/>
+</svg>

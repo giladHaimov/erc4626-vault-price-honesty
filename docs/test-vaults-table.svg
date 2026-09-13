@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1002" height="244" viewBox="0 0 1002 244">
+<rect width="100%" height="100%" fill="#ffffff"/>
+<text x="8" y="20" font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" font-weight="700" fill="#111">Local test vaults  —  green = expected pass and it passed   red = we planted a fail and the suite caught it</text>
+<rect x="1" y="28" width="1000" height="36" fill="#374151"/>
+<text x="13" y="52" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="700" fill="#fff"></text>
+<text x="83" y="52" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="700" fill="#fff">vault</text>
+<text x="363" y="52" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="700" fill="#fff">which case</text>
+<text x="583" y="52" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="700" fill="#fff">bad outcome (simple)</text>
+<rect x="1" y="64" width="1000" height="44" fill="#fca5a5"/>
+<line x1="1" y1="108" x2="1001" y2="108" stroke="#c5c5c5" stroke-width="1"/>
+<text x="13" y="92" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="700" fill="#111">FAIL</text>
+<text x="83" y="92" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="400" fill="#111">FailedFirstDepositorVault</text>
+<text x="363" y="92" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="400" fill="#111">first depositor</text>
+<text x="583" y="92" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="400" fill="#111">unfair share mint — victim paid, got 0 shares</text>
+<rect x="1" y="108" width="1000" height="44" fill="#86efac"/>
+<line x1="1" y1="152" x2="1001" y2="152" stroke="#c5c5c5" stroke-width="1"/>
+<text x="13" y="136" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="700" fill="#111">PASS</text>
+<text x="83" y="136" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="400" fill="#111">CorrectOffsetVault</text>
+<text x="363" y="136" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="400" fill="#111">first depositor (muted)</text>
+<text x="583" y="136" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="400" fill="#111">—</text>
+<rect x="1" y="152" width="1000" height="44" fill="#fca5a5"/>
+<line x1="1" y1="196" x2="1001" y2="196" stroke="#c5c5c5" stroke-width="1"/>
+<text x="13" y="180" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="700" fill="#111">FAIL</text>
+<text x="83" y="180" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="400" fill="#111">FailedPreviewLieVault</text>
+<text x="363" y="180" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="400" fill="#111">preview vs actual</text>
+<text x="583" y="180" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="400" fill="#111">unfair share mint — extra shares minted</text>
+<rect x="1" y="196" width="1000" height="44" fill="#fca5a5"/>
+<line x1="1" y1="240" x2="1001" y2="240" stroke="#c5c5c5" stroke-width="1"/>
+<text x="13" y="224" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="700" fill="#111">FAIL</text>
+<text x="83" y="224" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="400" fill="#111">FailedStaleNavVault</text>
+<text x="363" y="224" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="400" fill="#111">gift / stale NAV</text>
+<text x="583" y="224" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="400" fill="#111">share price stays wrong until poke()</text>
+<line x1="71" y1="28" x2="71" y2="242" stroke="#c5c5c5" stroke-width="1"/>
+<line x1="351" y1="28" x2="351" y2="242" stroke="#c5c5c5" stroke-width="1"/>
+<line x1="571" y1="28" x2="571" y2="242" stroke="#c5c5c5" stroke-width="1"/>
+<rect x="1" y="28" width="1000" height="214" fill="none" stroke="#9ca3af" stroke-width="1"/>
+</svg>
