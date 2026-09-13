@@ -1,8 +1,6 @@
 # ERC-4626 Vault Price Honesty
 
-**I measure 4626 pots. I don’t sell a cure.**
-
-[![ci](https://github.com/giladHaimov/erc4626-vault-test-report/actions/workflows/ci.yml/badge.svg)](https://github.com/giladHaimov/erc4626-vault-test-report/actions/workflows/ci.yml)
+[![ci](https://github.com/giladHaimov/erc4626-vault-price-honesty/actions/workflows/ci.yml/badge.svg)](https://github.com/giladHaimov/erc4626-vault-price-honesty/actions/workflows/ci.yml)
 
 I started this effort trying to **fix** several ERC-4626 share-price honesty issues. They are sort of known in the community, and they also show up in OpenZeppelin’s gold-copy vault. They mainly circle around these scenarios:
 
