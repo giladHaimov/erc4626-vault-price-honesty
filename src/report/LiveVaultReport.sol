@@ -4,7 +4,7 @@ pragma solidity ^0.8.24;
 import {Vm} from "forge-std/Vm.sol";
 
 /// @notice Writer for reports/live.md (vault test report, not an audit).
-library LiveReport {
+library LiveVaultReport {
     address private constant VM_ADDR = address(uint160(uint256(keccak256("hevm cheat code"))));
 
     string internal constant PATH = "reports/live.md";

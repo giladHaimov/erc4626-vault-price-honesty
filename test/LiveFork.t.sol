@@ -5,7 +5,7 @@ import {Test} from "forge-std/Test.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {IERC20Metadata} from "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol";
 import {IERC4626} from "@openzeppelin/contracts/interfaces/IERC4626.sol";
-import {LiveReport} from "../src/report/LiveReport.sol";
+import {LiveVaultReport} from "../src/report/LiveVaultReport.sol";
 
 /// @notice Phase 2: live mainnet-fork checks against the allowlist at one pinned block.
 /// @dev Skip entire suite when MAINNET_RPC_URL is unset so CI stays green without RPC.
@@ -33,7 +33,7 @@ contract LiveForkTest is Test {
         vm.createSelectFork(rpc);
         pinnedBlock = block.number;
         forked = true;
-        LiveReport.init(pinnedBlock);
+        LiveVaultReport.init(pinnedBlock);
     }
 
     function test_liveAllowlist_cases() public {
@@ -51,9 +51,9 @@ contract LiveForkTest is Test {
             try this.runOneVault(specs[i]) returns (bool included) {
                 if (included) ranVaults++;
             } catch Error(string memory reason) {
-                LiveReport.row(specs[i].name, "Suite", "N/A", string.concat("vault run revert: ", reason), "N/A (reverted)", "none named");
+                LiveVaultReport.row(specs[i].name, "Suite", "N/A", string.concat("vault run revert: ", reason), "N/A (reverted)", "none named");
             } catch (bytes memory data) {
-                LiveReport.row(
+                LiveVaultReport.row(
                     specs[i].name,
                     "Suite",
                     "N/A",
@@ -80,18 +80,18 @@ contract LiveForkTest is Test {
             // Public RPC forks flake on some proxies. Allowlist asset was already
             // checked with eth_call — keep measuring, do not invent a new address.
             if (s.expectedAsset == address(0)) {
-                LiveReport.row(
+                LiveVaultReport.row(
                     s.name,
                     "Verify",
                     "N/A",
-                    string.concat("asset() failed at block ", LiveReport.u(pinnedBlock), " and no allowlist asset"),
+                    string.concat("asset() failed at block ", LiveVaultReport.u(pinnedBlock), " and no allowlist asset"),
                     "dropped (asset() failed)",
                     "none named"
                 );
                 return false;
             }
             asset = s.expectedAsset;
-            LiveReport.row(
+            LiveVaultReport.row(
                 s.name,
                 "Verify",
                 "ran",
@@ -99,14 +99,14 @@ contract LiveForkTest is Test {
                     "asset() flaked on this fork; used allowlist asset ",
                     vm.toString(asset),
                     " at block ",
-                    LiveReport.u(pinnedBlock)
+                    LiveVaultReport.u(pinnedBlock)
                 ),
                 "fork flake (not 'not a 4626')",
                 "none named"
             );
         }
         if (s.expectedAsset != address(0) && asset != s.expectedAsset) {
-            LiveReport.row(
+            LiveVaultReport.row(
                 s.name,
                 "Verify",
                 "N/A",
@@ -167,7 +167,7 @@ contract LiveForkTest is Test {
         uint256 bal = IERC20(asset).balanceOf(s.vault);
         uint256 size = _depositSize(asset, dec, s.ethLike);
 
-        LiveReport.row(
+        LiveVaultReport.row(
             s.name,
             "Snapshot",
             "ran",
@@ -175,21 +175,21 @@ contract LiveForkTest is Test {
                 "asset=",
                 vm.toString(asset),
                 " decimals=",
-                LiveReport.u(dec),
+                LiveVaultReport.u(dec),
                 " totalAssets=",
-                LiveReport.qty(ta, dec),
+                LiveVaultReport.qty(ta, dec),
                 " totalSupply=",
-                LiveReport.u(supply),
+                LiveVaultReport.u(supply),
                 " balanceOf(vault)=",
-                LiveReport.qty(bal, dec),
+                LiveVaultReport.qty(bal, dec),
                 " block=",
-                LiveReport.u(pinnedBlock)
+                LiveVaultReport.u(pinnedBlock)
             ),
             "facts",
             "none named"
         );
 
-        LiveReport.row(
+        LiveVaultReport.row(
             s.name,
             "LeftoverEmpty",
             "N/A",
@@ -199,7 +199,7 @@ contract LiveForkTest is Test {
         );
 
         if (supply == 0 && ta == 0) {
-            LiveReport.row(
+            LiveVaultReport.row(
                 s.name,
                 "FirstDepositor",
                 "N/A",
@@ -208,15 +208,15 @@ contract LiveForkTest is Test {
                 "none named"
             );
         } else {
-            LiveReport.row(
+            LiveVaultReport.row(
                 s.name,
                 "FirstDepositor",
                 "N/A",
                 string.concat(
                     "non-empty live vault supply=",
-                    LiveReport.u(supply),
+                    LiveVaultReport.u(supply),
                     " totalAssets=",
-                    LiveReport.qty(ta, dec)
+                    LiveVaultReport.qty(ta, dec)
                 ),
                 "N/A (non-empty live)",
                 "none named"
@@ -238,15 +238,15 @@ contract LiveForkTest is Test {
 
     function _caseHelperGap(string memory subject, uint256 ta, uint256 bal, uint8 dec) internal {
         if (ta == bal) {
-            LiveReport.row(
+            LiveVaultReport.row(
                 subject,
                 "HelperGap",
                 "N/A",
                 string.concat(
                     "totalAssets=",
-                    LiveReport.qty(ta, dec),
+                    LiveVaultReport.qty(ta, dec),
                     " == balanceOf(vault)=",
-                    LiveReport.qty(bal, dec)
+                    LiveVaultReport.qty(bal, dec)
                 ),
                 "N/A (no gap at pin)",
                 "none named"
@@ -255,17 +255,17 @@ contract LiveForkTest is Test {
         }
         string memory side = ta > bal ? "TA>balance" : "balance>TA";
         uint256 gap = ta > bal ? ta - bal : bal - ta;
-        LiveReport.row(
+        LiveVaultReport.row(
             subject,
             "HelperGap",
             "N/A",
             string.concat(
                 "totalAssets=",
-                LiveReport.qty(ta, dec),
+                LiveVaultReport.qty(ta, dec),
                 " balanceOf(vault)=",
-                LiveReport.qty(bal, dec),
+                LiveVaultReport.qty(bal, dec),
                 " gap=",
-                LiveReport.qty(gap, dec),
+                LiveVaultReport.qty(gap, dec),
                 " (",
                 side,
                 "); single pinned block - not shown opening/closing"
@@ -286,11 +286,11 @@ contract LiveForkTest is Test {
         address gifter = makeAddr(string.concat("gift-", subject));
 
         if (!_fund(asset, depositor, size * 2)) {
-            LiveReport.row(subject, "GiftVsDeposit", "N/A", "deal(asset) failed (blacklist / nonstandard storage)", "N/A (deal failed)", "none named");
+            LiveVaultReport.row(subject, "GiftVsDeposit", "N/A", "deal(asset) failed (blacklist / nonstandard storage)", "N/A (deal failed)", "none named");
             return;
         }
         if (!_fund(asset, gifter, size)) {
-            LiveReport.row(subject, "GiftVsDeposit", "N/A", "deal(asset) to gifter failed", "N/A (deal failed)", "none named");
+            LiveVaultReport.row(subject, "GiftVsDeposit", "N/A", "deal(asset) to gifter failed", "N/A (deal failed)", "none named");
             return;
         }
 
@@ -301,7 +301,7 @@ contract LiveForkTest is Test {
             uint256 price0 = _pricePerShare(vault);
             (bool giftOk, string memory giftNote) = _attemptGift(asset, gifter, address(vault), size);
             if (!giftOk) {
-                LiveReport.row(
+                LiveVaultReport.row(
                     subject,
                     "GiftVsDeposit",
                     "N/A",
@@ -314,7 +314,7 @@ contract LiveForkTest is Test {
             uint256 ta1 = vault.totalAssets();
             uint256 price1 = _pricePerShare(vault);
             bool counts = ta1 != ta0 || price1 != price0;
-            LiveReport.row(
+            LiveVaultReport.row(
                 subject,
                 "GiftVsDeposit",
                 "ran",
@@ -322,15 +322,15 @@ contract LiveForkTest is Test {
                     "deposit N/A (",
                     depositNote,
                     "); gift=",
-                    LiveReport.qty(size, dec),
+                    LiveVaultReport.qty(size, dec),
                     " taBefore=",
-                    LiveReport.qty(ta0, dec),
+                    LiveVaultReport.qty(ta0, dec),
                     " taAfter=",
-                    LiveReport.qty(ta1, dec),
+                    LiveVaultReport.qty(ta1, dec),
                     " priceBefore=",
-                    LiveReport.u(price0),
+                    LiveVaultReport.u(price0),
                     " priceAfter=",
-                    LiveReport.u(price1)
+                    LiveVaultReport.u(price1)
                 ),
                 counts ? "gifts counted (deposit gated)" : "gifts not counted at pin (deposit gated)",
                 "none named"
@@ -342,7 +342,7 @@ contract LiveForkTest is Test {
         uint256 priceBefore = _pricePerShare(vault);
         (bool giftMoved, string memory giftErr) = _attemptGift(asset, gifter, address(vault), size);
         if (!giftMoved) {
-            LiveReport.row(
+            LiveVaultReport.row(
                 subject,
                 "GiftVsDeposit",
                 "N/A",
@@ -356,21 +356,21 @@ contract LiveForkTest is Test {
         uint256 taAfter = vault.totalAssets();
         uint256 priceAfter = _pricePerShare(vault);
         bool countsGift = taAfter != taBefore || priceAfter != priceBefore;
-        LiveReport.row(
+        LiveVaultReport.row(
             subject,
             "GiftVsDeposit",
             "ran",
             string.concat(
                 "deposit ok; gift=",
-                LiveReport.qty(size, dec),
+                LiveVaultReport.qty(size, dec),
                 " taBefore=",
-                LiveReport.qty(taBefore, dec),
+                LiveVaultReport.qty(taBefore, dec),
                 " taAfter=",
-                LiveReport.qty(taAfter, dec),
+                LiveVaultReport.qty(taAfter, dec),
                 " priceBefore=",
-                LiveReport.u(priceBefore),
+                LiveVaultReport.u(priceBefore),
                 " priceAfter=",
-                LiveReport.u(priceAfter)
+                LiveVaultReport.u(priceAfter)
             ),
             countsGift ? "gifts counted" : "gifts not counted at pin",
             countsGift ? "later depositors pay higher price; existing LPs gain (not theft)" : "none named"
@@ -424,7 +424,7 @@ contract LiveForkTest is Test {
     ) internal {
         address actor = makeAddr(string.concat("prev-", subject));
         if (!_fund(asset, actor, size * 4)) {
-            LiveReport.row(subject, "PreviewVsActual", "N/A", "deal(asset) failed", "N/A (deal failed)", "none named");
+            LiveVaultReport.row(subject, "PreviewVsActual", "N/A", "deal(asset) failed", "N/A (deal failed)", "none named");
             return;
         }
 
@@ -433,7 +433,7 @@ contract LiveForkTest is Test {
             maxDep = m;
         } catch {}
         if (maxDep == 0) {
-            LiveReport.row(subject, "PreviewVsActual", "N/A", "maxDeposit=0", "N/A gated", "none named");
+            LiveVaultReport.row(subject, "PreviewVsActual", "N/A", "maxDeposit=0", "N/A gated", "none named");
             return;
         }
 
@@ -442,10 +442,10 @@ contract LiveForkTest is Test {
         try vault.previewDeposit(depAmt) returns (uint256 p) {
             previewDep = p;
         } catch Error(string memory reason) {
-            LiveReport.row(subject, "PreviewVsActual", "N/A", string.concat("previewDeposit revert: ", reason), "N/A gated", "none named");
+            LiveVaultReport.row(subject, "PreviewVsActual", "N/A", string.concat("previewDeposit revert: ", reason), "N/A gated", "none named");
             return;
         } catch (bytes memory data) {
-            LiveReport.row(
+            LiveVaultReport.row(
                 subject,
                 "PreviewVsActual",
                 "N/A",
@@ -472,11 +472,11 @@ contract LiveForkTest is Test {
         vm.stopPrank();
 
         if (!ok) {
-            LiveReport.row(
+            LiveVaultReport.row(
                 subject,
                 "PreviewVsActual",
                 "N/A",
-                string.concat("deposit revert: ", err, " (maxDeposit was ", LiveReport.u(maxDep), ")"),
+                string.concat("deposit revert: ", err, " (maxDeposit was ", LiveVaultReport.u(maxDep), ")"),
                 "N/A gated",
                 "none named"
             );
@@ -486,17 +486,17 @@ contract LiveForkTest is Test {
         bool depPass = actualDep >= previewDep;
         string memory extra = _tryRedeemNote(vault, asset, actor, dec);
 
-        LiveReport.row(
+        LiveVaultReport.row(
             subject,
             "PreviewVsActual",
             "ran",
             string.concat(
                 "deposit assets=",
-                LiveReport.qty(depAmt, dec),
+                LiveVaultReport.qty(depAmt, dec),
                 " actualShares=",
-                LiveReport.u(actualDep),
+                LiveVaultReport.u(actualDep),
                 " previewShares=",
-                LiveReport.u(previewDep),
+                LiveVaultReport.u(previewDep),
                 extra
             ),
             depPass ? "PASS (deposit actual>=preview)" : "FAIL (deposit actual<preview)",
@@ -527,9 +527,9 @@ contract LiveForkTest is Test {
             uint256 actualRed = delta > 0 ? delta : out;
             return string.concat(
                 "; redeem actual=",
-                LiveReport.qty(actualRed, dec),
+                LiveVaultReport.qty(actualRed, dec),
                 " preview=",
-                LiveReport.qty(previewRed, dec),
+                LiveVaultReport.qty(previewRed, dec),
                 actualRed >= previewRed ? " OK" : " FAIL"
             );
         } catch {
@@ -576,7 +576,7 @@ contract LiveForkTest is Test {
             assembly {
                 sel := mload(add(data, 0x20))
             }
-            return string.concat("sel=", _toHex4(sel), " len=", LiveReport.u(data.length));
+            return string.concat("sel=", _toHex4(sel), " len=", LiveVaultReport.u(data.length));
         }
         return "len<4";
     }
