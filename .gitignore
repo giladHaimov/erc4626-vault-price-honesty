@@ -1,0 +1,7 @@
+cache/
+out/
+broadcast/
+.env
+.idea
+.DS_Store
+delete_me
