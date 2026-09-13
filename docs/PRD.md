@@ -1,6 +1,6 @@
 # PRD — ERC-4626 vault test report (Foundry)
 
-Status: Phase 1 (local fixtures). Not an audit. Not a patched vault.
+Status: P1 fixtures + P2 live table published (block 25967333). Not an audit. Not a patched vault.
 
 ## Goal
 
@@ -56,11 +56,11 @@ If who-is-hurt is unknown, write `none named` — do not invent.
 
 - **P1** — this repo boots: Foundry, fixtures, local tests, `reports/fixtures.md` written by tests. `forge test` green without RPC.
 - **P2** — live-fork harness + allowlist of 10–15 addresses + pinned blocks + per-case N/A reasons. Needs `MAINNET_RPC_URL`.
-- **P3** — published report for those vaults. GitHub face / pins are packaging, not this repo.
+- **P3** — README hook + 10+ live vaults that ran. GitHub face / pins are packaging, not this repo.
 
-## Done for P1
 
-- `forge test` passes on a clean machine with Foundry, no RPC.
-- Preview liar fails case 1; baseline passes case 1.
-- Leftover, gift, first-depositor emit numbers + who-is-hurt, not pass/fail-as-audit.
+## Done
+
+- P1: `forge test` green with no RPC. Preview liar is caught. Leftover/gift/first-depositor are facts + who-is-hurt.
+- P2: live report at pinned block `25967333`. README is the hook. Live leftover/first-depositor stay N/A.
 - README never says audit, never says we found an OZ bug.

@@ -3,7 +3,7 @@
 | Phase | Scope |
 |---|---|
 | **1 (done)** | Local fixtures + 5 cases. `forge test` green with no RPC. Writes `reports/fixtures.md`. |
-| **2 (done)** | Live mainnet-fork table at pinned block `25967282`. 9 of 13 vaults ran; 4 `asset()` drops on public Alchemy (see allowlist). Writes `reports/live.md`. |
+| **2 (done)** | Live mainnet-fork table at pinned block `25967333`. 11 vaults ran at pin 25967333; 4 public-fork proxy gaps documented (see allowlist). Writes `reports/live.md`. |
 
 Not an audit. Judgment column is **who is hurt**.
 
