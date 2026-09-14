@@ -2,6 +2,8 @@
 
 [![ci](https://github.com/giladHaimov/erc4626-vault-price-honesty/actions/workflows/ci.yml/badge.svg)](https://github.com/giladHaimov/erc4626-vault-price-honesty/actions/workflows/ci.yml)
 
+Read the case study: [What an ERC-4626 price test actually shows](https://medium.com/@giladha/what-an-erc-4626-price-test-actually-shows-9fce352c5bde?postPublishedType=repub).
+
 I started this effort trying to **fix** several ERC-4626 share-price honesty issues. They are sort of known in the community, and they also show up in OpenZeppelin’s gold-copy vault. They mainly circle around these scenarios:
 
 - **Empty pot, next depositor wiped.** Nobody holds shares anymore. Everyone left, or someone dropped a gift onto an almost-empty vault. The next person who deposits real tokens can get far too few shares, or zero. Whoever still holds a tiny leftover share can take almost the whole pot.
